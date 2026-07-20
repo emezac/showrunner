@@ -6,6 +6,33 @@ The application is generic: it is not tied to the foosball demo or to fictional 
 
 This is an experimental hackathon project. It calls paid external generative services, and model output remains probabilistic. Showrunner reduces that uncertainty with explicit contracts, reference media, quality gates, bounded repair, and operator controls; it cannot make every provider generation deterministic.
 
+## Proof of Deployment
+
+The following Qwen Cloud screenshots provide the deployment evidence required for the hackathon submission:
+
+| Evidence | Qwen Cloud deployment proof |
+| --- | --- |
+| Proof 1 | [Open `proof1.png`](proof1.png) |
+| Proof 2 | [Open `proof2.png`](proof2.png) |
+| Proof 3 | [Open `proof3.png`](proof3.png) |
+
+<details>
+<summary>Preview deployment evidence</summary>
+
+### Proof 1
+
+![Qwen Cloud deployment proof 1](proof1.png)
+
+### Proof 2
+
+![Qwen Cloud deployment proof 2](proof2.png)
+
+### Proof 3
+
+![Qwen Cloud deployment proof 3](proof3.png)
+
+</details>
+
 ## What the application does
 
 1. Accepts a story prompt and cinematic configuration.
