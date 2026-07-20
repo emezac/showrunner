@@ -1,0 +1,40 @@
+{
+  "budget_ledger": {
+    "tokens_used": 0,
+    "tokens_remaining": 18000,
+    "video_credits_used": 0,
+    "calls": []
+  },
+  "video_jobs": [
+    {
+      "shot_id": "1A",
+      "task_id": "a9aac0c9-675a-4d5d-b4e1-f8753e04f862",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1B",
+      "task_id": "2ce4718e-6d1b-4fad-b2da-256b1865603e",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "2A",
+      "task_id": "7ff951f4-6925-4fb4-8408-f3bf9f81cb90",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "3A",
+      "task_id": "8b87b115-0d19-488d-a655-380bb7f6d53c",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "2B",
+      "task_id": "9521b926-b326-4477-8ef4-1f18ac1243e2",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "3B",
+      "task_id": "b9ec2fa2-0b3d-4492-9a1f-e69943c115a4",
+      "status": "SUCCEEDED"
+    }
+  ]
+}

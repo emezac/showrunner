@@ -1,0 +1,75 @@
+{
+  "budget_ledger": {
+    "tokens_used": 0,
+    "tokens_remaining": 18000,
+    "video_credits_used": 0,
+    "calls": []
+  },
+  "video_jobs": [
+    {
+      "shot_id": "1.2",
+      "task_id": "b9959b61-0bc0-403a-b5dc-bd70bb1de993",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.1",
+      "task_id": "d6f93486-e495-455c-9045-9e2a1f6cb288",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.3",
+      "task_id": "85c76f0d-cf56-434d-b483-14098f6c0f2b",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.4",
+      "task_id": "5e20f37e-5e92-4747-bbb5-63dca196e31f",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.5",
+      "task_id": "00cec40a-33d2-44b1-b39b-83c8a72a2844",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "2.1",
+      "task_id": null,
+      "status": "needs_review"
+    },
+    {
+      "shot_id": "1.6",
+      "task_id": "c6165daf-c453-427a-9e2c-b64191d4aef7",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "3.1",
+      "task_id": null,
+      "status": "needs_review"
+    },
+    {
+      "shot_id": "4.1",
+      "task_id": null,
+      "status": "needs_review"
+    },
+    {
+      "shot_id": "5.1",
+      "task_id": null,
+      "status": "needs_review"
+    },
+    {
+      "shot_id": "6.1",
+      "task_id": null,
+      "status": "needs_review"
+    },
+    {
+      "shot_id": "7.1",
+      "task_id": null,
+      "status": "needs_review"
+    },
+    {
+      "shot_id": "8.1",
+      "task_id": null,
+      "status": "needs_review"
+    }
+  ]
+}

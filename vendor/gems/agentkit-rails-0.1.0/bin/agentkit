@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# AgentKit Rails CLI
+# Usage:
+#   agentkit new my_app          — run Setup Wizard and generate app
+#   agentkit generate --profile  — generate app from existing domain_profile.json
+#   agentkit version             — print version
+
+require_relative "../lib/agentkit/version"
+require_relative "../lib/agentkit/cli/wizard"
+require_relative "../lib/agentkit/cli/generator"
+
+command = ARGV[0]
+
+case command
+when "new"
+  app_name = ARGV[1]
+  if app_name.nil? || app_name.empty?
+    puts "Usage: agentkit new <app_name>"
+    exit 1
+  end
+  profile = Agentkit::CLI::Wizard.new(app_name).run
+  Agentkit::CLI::Generator.new(profile).generate
+when "generate"
+  profile_path = ARGV.find { |a| a.start_with?("--profile=") }&.split("=", 2)&.last
+  if profile_path.nil?
+    puts "Usage: agentkit generate --profile=path/to/domain_profile.json"
+    exit 1
+  end
+  profile = JSON.parse(File.read(profile_path))
+  Agentkit::CLI::Generator.new(profile).generate
+when "version", "--version", "-v"
+  puts "agentkit-rails #{Agentkit::VERSION}"
+else
+  puts <<~HELP
+    AgentKit Rails CLI v#{Agentkit::VERSION}
+
+    Commands:
+      agentkit new <app_name>              Run the Setup Wizard and generate a domain app
+      agentkit generate --profile=<path>   Generate app from an existing domain_profile.json
+      agentkit version                     Print version
+
+    Examples:
+      agentkit new legal_sketch
+      agentkit generate --profile=domain_profile.json
+  HELP
+end

@@ -1,0 +1,595 @@
+{
+  "budget_ledger": {
+    "tokens_used": 65943,
+    "tokens_remaining": 0,
+    "video_credits_used": 0,
+    "calls": [
+      {
+        "stage": "visual_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 5751,
+        "at": "2026-07-19T08:17:27Z"
+      },
+      {
+        "stage": "visual_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 5204,
+        "at": "2026-07-19T08:18:49Z"
+      },
+      {
+        "stage": "visual_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 3611,
+        "at": "2026-07-19T08:19:47Z"
+      },
+      {
+        "stage": "visual_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 9411,
+        "at": "2026-07-19T08:22:17Z"
+      },
+      {
+        "stage": "visual_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 7158,
+        "at": "2026-07-19T08:24:04Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 13274,
+        "at": "2026-07-19T08:36:43Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 11046,
+        "at": "2026-07-19T08:37:28Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 10488,
+        "at": "2026-07-19T08:38:05Z"
+      }
+    ],
+    "allow_token_overrun": true,
+    "token_budget": 80000,
+    "tokens_over_budget": 0
+  },
+  "video_jobs": [
+    {
+      "shot_id": "1.3",
+      "task_id": "65961bdf-716e-4c03-9be8-9ce4268e5fae",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "1.1",
+      "task_id": "d2ddefee-f7f9-4d51-bab7-2f62ca375f04",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "1.2",
+      "task_id": "6246fde8-0a9e-4742-85cf-c76d455a07c7",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "2.1",
+      "task_id": "ad391da1-959f-4652-8d58-7ab6c28a2e56",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "2.2",
+      "task_id": "200010b0-8ac9-48a0-af79-b58417c39a0e",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "2.3",
+      "task_id": "d1ab6994-917f-4e48-a535-b2db50fd4f6e",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "3.1",
+      "task_id": "9ba41ef1-507c-4f2d-af41-08060cb2a638",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "3.2",
+      "task_id": "493efb61-a9d0-4818-8dda-af365be78cee",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "3.3",
+      "task_id": "5d92d153-3c21-4cce-84df-bee27a5a1549",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "4.1",
+      "task_id": "5bad526f-4df1-4c8c-a420-40e727029471",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "4.2",
+      "task_id": "330944e4-f06e-48d5-a73a-e55e8953dfc9",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "4.3",
+      "task_id": "767d534a-6be6-4e22-b611-c4e872983a0b",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "5.1",
+      "task_id": "19676ea9-2039-4c56-80b9-85bdcd78d956",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    },
+    {
+      "shot_id": "5.2",
+      "task_id": "380e62df-71a1-4e46-9f27-443481903321",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 3,
+      "provider_duration": 3
+    },
+    {
+      "shot_id": "5.3",
+      "task_id": "70a2d8f3-84de-41c0-a0c6-4e59910300ae",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 4,
+      "provider_duration": 4
+    }
+  ],
+  "edit_decision_list": {
+    "version": "1.0",
+    "entries": [
+      {
+        "index": 1,
+        "clip_id": "1.1",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish the exact subjects, setting and starting positions from the premise",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 0.0,
+        "timeline_out": 4.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "start of film"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 2,
+        "clip_id": "1.2",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 2,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Show one atomic action that advances this scene's objective",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 4.0,
+        "timeline_out": 8.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 3,
+        "clip_id": "1.3",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 3,
+        "scene_boundary": false,
+        "editorial_role": "resolution",
+        "purpose": "Hold on the new visible state caused by this scene",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 8.0,
+        "timeline_out": 12.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 4,
+        "clip_id": "2.1",
+        "scene_id": "scene_02",
+        "scene_index": 2,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish the exact subjects, setting and starting positions from the premise",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 11.0,
+        "timeline_out": 15.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 5,
+        "clip_id": "2.2",
+        "scene_id": "scene_02",
+        "scene_index": 2,
+        "shot_index": 2,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Show one atomic action that advances this scene's objective",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 15.0,
+        "timeline_out": 19.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 6,
+        "clip_id": "2.3",
+        "scene_id": "scene_02",
+        "scene_index": 2,
+        "shot_index": 3,
+        "scene_boundary": false,
+        "editorial_role": "resolution",
+        "purpose": "Hold on the new visible state caused by this scene",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 19.0,
+        "timeline_out": 23.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 7,
+        "clip_id": "3.1",
+        "scene_id": "scene_03",
+        "scene_index": 3,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish the exact subjects, setting and starting positions from the premise",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 22.0,
+        "timeline_out": 26.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 8,
+        "clip_id": "3.2",
+        "scene_id": "scene_03",
+        "scene_index": 3,
+        "shot_index": 2,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Show one atomic action that advances this scene's objective",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 26.0,
+        "timeline_out": 30.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 9,
+        "clip_id": "3.3",
+        "scene_id": "scene_03",
+        "scene_index": 3,
+        "shot_index": 3,
+        "scene_boundary": false,
+        "editorial_role": "resolution",
+        "purpose": "Hold on the new visible state caused by this scene",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 30.0,
+        "timeline_out": 34.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 10,
+        "clip_id": "4.1",
+        "scene_id": "scene_04",
+        "scene_index": 4,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish the exact subjects, setting and starting positions from the premise",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 33.0,
+        "timeline_out": 37.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 11,
+        "clip_id": "4.2",
+        "scene_id": "scene_04",
+        "scene_index": 4,
+        "shot_index": 2,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Show one atomic action that advances this scene's objective",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 37.0,
+        "timeline_out": 41.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 12,
+        "clip_id": "4.3",
+        "scene_id": "scene_04",
+        "scene_index": 4,
+        "shot_index": 3,
+        "scene_boundary": false,
+        "editorial_role": "resolution",
+        "purpose": "Hold on the new visible state caused by this scene",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 41.0,
+        "timeline_out": 45.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 13,
+        "clip_id": "5.1",
+        "scene_id": "scene_05",
+        "scene_index": 5,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish the exact subjects, setting and starting positions from the premise",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 44.0,
+        "timeline_out": 48.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 14,
+        "clip_id": "5.2",
+        "scene_id": "scene_05",
+        "scene_index": 5,
+        "shot_index": 2,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Show one atomic action that advances this scene's objective",
+        "source_in": 0.0,
+        "source_out": 3.0,
+        "timeline_in": 48.0,
+        "timeline_out": 51.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 15,
+        "clip_id": "5.3",
+        "scene_id": "scene_05",
+        "scene_index": 5,
+        "shot_index": 3,
+        "scene_boundary": false,
+        "editorial_role": "resolution",
+        "purpose": "Hold on the new visible state caused by this scene",
+        "source_in": 0.0,
+        "source_out": 4.0,
+        "timeline_in": 51.0,
+        "timeline_out": 55.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "end of film"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      }
+    ],
+    "scene_count": 5,
+    "clip_count": 15,
+    "planned_duration": 55.0
+  }
+}

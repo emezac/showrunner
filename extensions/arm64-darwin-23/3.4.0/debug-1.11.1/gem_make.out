@@ -1,0 +1,19 @@
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/debug-1.11.1/ext/debug
+/Users/admin/.rbenv/versions/3.4.1/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-di65mn sitelibdir\=./.gem.20260707-90692-di65mn clean
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-di65mn sitelibdir\=./.gem.20260707-90692-di65mn
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.bundle
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-di65mn sitelibdir\=./.gem.20260707-90692-di65mn install
+/usr/bin/install -c -m 0755 debug.bundle ./.gem.20260707-90692-di65mn/debug
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-di65mn sitelibdir\=./.gem.20260707-90692-di65mn clean

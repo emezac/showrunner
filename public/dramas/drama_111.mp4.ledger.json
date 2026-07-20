@@ -1,0 +1,603 @@
+{
+  "budget_ledger": {
+    "tokens_used": 93903,
+    "tokens_remaining": 0,
+    "video_credits_used": 0,
+    "calls": [
+      {
+        "stage": "classify",
+        "model": "qwen3.7-plus",
+        "tokens": 5828,
+        "at": "2026-07-17T21:01:35Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 12759,
+        "at": "2026-07-17T21:13:13Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 12343,
+        "at": "2026-07-17T21:13:55Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 13237,
+        "at": "2026-07-17T21:14:56Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 4563,
+        "at": "2026-07-17T21:15:32Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 12507,
+        "at": "2026-07-17T21:28:37Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 14083,
+        "at": "2026-07-17T21:29:51Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 13866,
+        "at": "2026-07-17T21:31:04Z"
+      },
+      {
+        "stage": "video_consistency",
+        "model": "qwen3.7-plus",
+        "tokens": 4717,
+        "at": "2026-07-17T21:31:43Z"
+      }
+    ],
+    "allow_token_overrun": true,
+    "token_budget": 95000,
+    "tokens_over_budget": 0
+  },
+  "video_jobs": [
+    {
+      "shot_id": "1.2",
+      "task_id": "058023cd-2c44-4960-845c-2c1326151168",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.1",
+      "task_id": "8941b1db-2726-400c-8003-3edd391c8449",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 7,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.3",
+      "task_id": "697b0ede-36fe-4633-881b-345f8940a182",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.4",
+      "task_id": "e188b326-c46e-4adc-b6bc-92de8cd25825",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.5",
+      "task_id": "0fe0ae8f-69d5-4183-8c8e-ceea689eb78d",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.6",
+      "task_id": "f38ef62d-ef08-46ad-8965-3645057928d0",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "2.1",
+      "task_id": "53c46b14-06b0-42fe-bbfc-6d04689c1d6e",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 7,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "3.1",
+      "task_id": "27eebc71-f108-4b3e-b27f-79445ca8f373",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 7,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "4.1",
+      "task_id": "d370d236-0213-4562-a880-86ad2a07a310",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 7,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "5.1",
+      "task_id": "6a0f6827-a187-4f35-8c7a-ae0f0735b63a",
+      "status": "SUCCEEDED",
+      "render_mode": "r2v",
+      "render_strategy": "character_r2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "6.1",
+      "task_id": "771155ae-f79b-4508-a4c2-b75b081d9a51",
+      "status": "SUCCEEDED",
+      "render_mode": "r2v",
+      "render_strategy": "character_r2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "7.1",
+      "task_id": "9e67a659-acd5-446e-bff7-9b1b92f72099",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "8.1",
+      "task_id": "c6aa1c33-a7a3-4c1a-ac85-656a2f9dfa8f",
+      "status": "SUCCEEDED",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.4",
+      "task_id": "4db1c443-5a7b-4246-858c-0acfe025c2a6",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.5",
+      "task_id": "c00b124a-32b7-43ee-a362-0c188c52a338",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "1.6",
+      "task_id": "dbfe256e-0162-4075-9a1a-e56d89159b6e",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "2.1",
+      "task_id": "66667279-1e7c-476d-a2a0-c393855ab6fb",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 7,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "4.1",
+      "task_id": "111a5447-0f12-4f95-b819-2d71f7c43091",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 7,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "5.1",
+      "task_id": "6e4e354f-8182-47d6-acd2-e6ac416df206",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "r2v",
+      "render_strategy": "character_r2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "6.1",
+      "task_id": "2fda649f-fb5f-4ea8-88ff-221c1a452791",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "r2v",
+      "render_strategy": "character_r2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    },
+    {
+      "shot_id": "7.1",
+      "task_id": "2a95b6b0-aafd-4f58-940b-5d2f8533f192",
+      "status": "SUCCEEDED_AFTER_CONSISTENCY_REPAIR",
+      "render_mode": "i2v",
+      "render_strategy": "keyframe_i2v",
+      "editorial_duration": 6,
+      "provider_duration": 5
+    }
+  ],
+  "edit_decision_list": {
+    "version": "1.0",
+    "entries": [
+      {
+        "index": 1,
+        "clip_id": "1.1",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 7.0,
+        "timeline_in": 0.0,
+        "timeline_out": 7.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "start of film"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 2,
+        "clip_id": "1.2",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 2,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Advance one atomic visible action",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 7.0,
+        "timeline_out": 13.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 3,
+        "clip_id": "1.3",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 3,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Advance one atomic visible action",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 13.0,
+        "timeline_out": 19.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 4,
+        "clip_id": "1.4",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 4,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Advance one atomic visible action",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 19.0,
+        "timeline_out": 25.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 5,
+        "clip_id": "1.5",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 5,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Advance one atomic visible action",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 25.0,
+        "timeline_out": 31.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 6,
+        "clip_id": "1.6",
+        "scene_id": "scene_01",
+        "scene_index": 1,
+        "shot_index": 6,
+        "scene_boundary": false,
+        "editorial_role": "action",
+        "purpose": "Advance one atomic visible action",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 31.0,
+        "timeline_out": 37.0,
+        "transition_in": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "preserve action and dialogue continuity"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 7,
+        "clip_id": "2.1",
+        "scene_id": "scene_02",
+        "scene_index": 2,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 7.0,
+        "timeline_in": 36.0,
+        "timeline_out": 43.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 8,
+        "clip_id": "3.1",
+        "scene_id": "scene_03",
+        "scene_index": 3,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 7.0,
+        "timeline_in": 42.0,
+        "timeline_out": 49.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 9,
+        "clip_id": "4.1",
+        "scene_id": "scene_04",
+        "scene_index": 4,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 7.0,
+        "timeline_in": 48.0,
+        "timeline_out": 55.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 10,
+        "clip_id": "5.1",
+        "scene_id": "scene_05",
+        "scene_index": 5,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 54.0,
+        "timeline_out": 60.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 11,
+        "clip_id": "6.1",
+        "scene_id": "scene_06",
+        "scene_index": 6,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 59.0,
+        "timeline_out": 65.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 12,
+        "clip_id": "7.1",
+        "scene_id": "scene_07",
+        "scene_index": 7,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 64.0,
+        "timeline_out": 70.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      },
+      {
+        "index": 13,
+        "clip_id": "8.1",
+        "scene_id": "scene_08",
+        "scene_index": 8,
+        "shot_index": 1,
+        "scene_boundary": true,
+        "editorial_role": "establishing",
+        "purpose": "Establish geography, subjects and the initial state",
+        "source_in": 0.0,
+        "source_out": 6.0,
+        "timeline_in": 69.0,
+        "timeline_out": 75.0,
+        "transition_in": {
+          "type": "fade",
+          "duration": 1.0,
+          "reason": "scene boundary"
+        },
+        "transition_out": {
+          "type": "cut",
+          "duration": 0.0,
+          "reason": "end of film"
+        },
+        "audio_cues": [],
+        "dialogue_range": {}
+      }
+    ],
+    "scene_count": 8,
+    "clip_count": 13,
+    "planned_duration": 75.0
+  }
+}

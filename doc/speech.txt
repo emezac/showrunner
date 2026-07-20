@@ -1,0 +1,17 @@
+SHOWRUNNER ARCHITECTURE — TWO-MINUTE HACKATHON SPEECH
+
+Showrunner is a consistency-first generative film system. Instead of treating video creation as one opaque AI request, it organizes production as six durable stages: narrative contract, canonical visual bible, storyboard contract, storyboard visual QA, video production, and final edit and delivery.
+
+The flow begins in the Rails interface, where the producer provides the story, cinematic direction, and selects either Automatic or Full Control. Before production starts, the Production Token Predictor estimates the likely token range and includes a repair reserve based on script complexity and historical projects. Any expected overrun requires explicit approval.
+
+ProjectsController validates this authority and enqueues ShowrunnerAgent through Sidekiq. The agent creates the screenplay, extracts recurring characters, humans, props, and locations, and persists a checkpoint after every expensive stage. This makes the pipeline resumable: completed work is reused instead of purchased again.
+
+The Production Bible is the central consistency contract. It locks identity, body proportions, wardrobe, object dimensions, colors, materials, location geometry, physical constraints, and permitted character agency. The Storyboard Contract then converts the screenplay into atomic shots with explicit initial and final states, continuity bindings, camera direction, timing, continuity plates, and an edit decision list.
+
+Before video generation, Qwen performs multimodal storyboard QA. Identity, prop fidelity, scale, and physics each have independent hard thresholds, so cinematic beauty cannot hide a continuity failure. Technical calibration images are isolated as QA-only evidence and can never appear in narrative frames.
+
+Approved images are stored by CanonicalMediaStore as SHA-256 content-addressed files. This protects the project from expiring provider URLs and prevents unnecessary regeneration of characters or keyframes.
+
+ProduceDramaJob then claims one render and selects the best strategy per shot: image-to-video for complete compositions, reference-to-video for character identity, or text-to-video as fallback. HappyHorse generates the clips, while a second QA gate evaluates the final video. Repairs are targeted and bounded, and Full Control can explicitly accept visual-only risk for one exact render contract.
+
+Finally, AudioDirector resolves narration and music, and FFmpeg assembles the edit deterministically without debug labels or calibration overlays. PostgreSQL stores the production manifest and outcomes, Redis coordinates jobs, and ActionCable reports live progress. The result is not merely generated video; it is an auditable, recoverable, and consistency-locked film production pipeline.

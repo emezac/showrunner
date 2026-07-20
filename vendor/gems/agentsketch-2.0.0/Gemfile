@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gemspec
+
+gem "aflow", path: "./aflow-0.1.0"
+gem "ruby-a2a", path: "/Users/admin/code/gems/rubya2a/ruby-a2a"
+# Optional vector store support
+# gem "neighbor"   # pgvector nearest-neighbor search
+# gem "pg"         # PostgreSQL driver
+# gem "qdrant-ruby" # Qdrant vector store
+
+# Optional observability
+# gem "opentelemetry-sdk"
+# gem "opentelemetry-instrumentation-ruby_llm"
+
+# Optional state backends
+# gem "redis"
+
+gem "webrick"

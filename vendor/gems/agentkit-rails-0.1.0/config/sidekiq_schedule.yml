@@ -1,0 +1,21 @@
+# AgentKit Rails — base Sidekiq cron schedule
+# Loaded by Agentkit::Engine initializer.
+# Domain apps can override by redefining these keys in their own sidekiq_schedule.yml.
+
+agentkit_dreaming:
+  cron: "0 2 * * *"       # 2am nightly — overridden by Agentkit.config.dreaming_cron
+  class: "Agentkit::DreamingJob"
+  queue: agentkit_dreaming
+  description: "Nightly memory consolidation and synthesis cycle"
+
+agentkit_evolution_report:
+  cron: "0 8 * * 1"       # Monday 8am weekly
+  class: "Agentkit::EvolutionReportJob"
+  queue: agentkit_evolution
+  description: "Weekly evolution suggestions report"
+
+agentkit_financial_health:
+  cron: "0 9 1 * *"       # 1st of month at 9am
+  class: "Agentkit::FinancialHealthJob"
+  queue: agentkit_financial
+  description: "Monthly LLM cost and financial health check"

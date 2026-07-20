@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+# macOS does not provide the Linux-only C.UTF-8 locale. Foreman reads .env
+# using the process external encoding, so inheriting that invalid locale makes
+# any non-ASCII prompt/configuration byte crash the entire development stack.
+ENV["LANG"] = "en_US.UTF-8"
+ENV["LC_ALL"] = "en_US.UTF-8"
+
+exec "bundle", "exec", "foreman", "start", "-f", "Procfile.dev"

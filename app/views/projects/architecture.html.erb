@@ -1,0 +1,446 @@
+<% content_for :title, "Showrunner Architecture" %>
+
+<style>
+  .architecture-page {
+    --arch-surface: rgba(17, 20, 25, .72);
+    --arch-surface-strong: rgba(12, 14, 18, .9);
+    --arch-line: rgba(255, 255, 255, .09);
+    --arch-amber: #e3a34d;
+    --arch-teal: #55c5bb;
+    --arch-red: #f26a63;
+    padding-bottom: 5rem;
+    overflow-x: hidden;
+  }
+  .architecture-page * { box-sizing: border-box; }
+  .arch-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2.7rem, 6vw, 5.5rem) clamp(1.2rem, 4vw, 4rem);
+    margin-bottom: 2rem;
+    border: 1px solid var(--arch-line);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 18% 10%, rgba(227,163,77,.16), transparent 34%),
+      radial-gradient(circle at 92% 18%, rgba(85,197,187,.14), transparent 35%),
+      linear-gradient(145deg, rgba(22,21,22,.96), rgba(9,14,17,.92));
+    box-shadow: 0 35px 90px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.05);
+  }
+  .arch-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .25;
+    background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+  .arch-hero__content { position: relative; z-index: 1; max-width: 920px; }
+  .arch-kicker, .arch-eyebrow {
+    font: 700 .68rem/1.2 var(--font-mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .arch-kicker { color: var(--arch-amber); }
+  .arch-hero h1 {
+    max-width: 850px;
+    margin: .85rem 0 1rem;
+    color: var(--parchment);
+    font-size: clamp(2.3rem, 5.6vw, 5rem);
+    font-weight: 520;
+    line-height: .98;
+    letter-spacing: -.045em;
+  }
+  .arch-hero h1 em { color: var(--arch-amber); font-weight: inherit; }
+  .arch-hero p { max-width: 780px; margin: 0; color: var(--steel); font-size: clamp(.96rem, 1.6vw, 1.12rem); line-height: 1.7; }
+  .arch-meta { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.6rem; }
+  .arch-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .48rem;
+    padding: .48rem .76rem;
+    border: 1px solid var(--arch-line);
+    border-radius: 999px;
+    background: rgba(255,255,255,.035);
+    color: var(--steel);
+    font: 650 .67rem/1 var(--font-mono);
+  }
+  .arch-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--arch-teal); box-shadow: 0 0 13px var(--arch-teal); }
+  .arch-nav { display: flex; flex-wrap: wrap; gap: .55rem; margin: 0 0 2.4rem; }
+  .arch-nav a { padding: .55rem .8rem; border: 1px solid var(--arch-line); border-radius: 10px; color: var(--steel); text-decoration: none; font: 650 .66rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: .06em; background: rgba(255,255,255,.02); }
+  .arch-nav a:hover { color: var(--parchment); border-color: rgba(227,163,77,.45); background: rgba(227,163,77,.06); }
+  .arch-section { margin: 0 0 4rem; scroll-margin-top: 2rem; }
+  .arch-section__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 420px); gap: 2rem; align-items: end; margin-bottom: 1.35rem; }
+  .arch-eyebrow { color: var(--arch-teal); }
+  .arch-section h2 { margin: .35rem 0 0; color: var(--parchment); font-size: clamp(1.7rem, 3vw, 2.55rem); font-weight: 540; letter-spacing: -.025em; }
+  .arch-section__head p { margin: 0; color: var(--steel); font-size: .88rem; line-height: 1.65; }
+  .arch-glass {
+    border: 1px solid var(--arch-line);
+    border-radius: 20px;
+    background: var(--arch-surface);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 22px 55px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.035);
+  }
+  .arch-diagram-shell { position: relative; width: 100%; max-width: 100%; overflow-x: auto; padding: 1rem; }
+  .arch-diagram-shell svg { display: block; width: 100%; min-width: 1180px; height: auto; font-family: var(--font-mono); }
+  .arch-diagram-legend { display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; padding: 0 1.2rem 1.1rem; color: var(--steel); font: 650 .64rem var(--font-mono); }
+  .arch-diagram-legend span { display: inline-flex; align-items: center; gap: .42rem; }
+  .arch-diagram-legend i { width: 18px; height: 3px; border-radius: 999px; background: var(--arch-teal); }
+  .arch-diagram-legend .is-amber { background: var(--arch-amber); }
+  .arch-diagram-legend .is-red { background: var(--arch-red); }
+  .arch-diagram-legend .is-dashed { height: 0; border-top: 2px dashed #78808c; background: transparent; }
+  .arch-diagram-hint { display: none; margin: 0 1.1rem 1rem; color: var(--steel-dim); font: 650 .6rem var(--font-mono); text-transform: uppercase; letter-spacing: .07em; }
+  .arch-pipeline { display: grid; grid-template-columns: repeat(6, minmax(170px, 1fr)); gap: .8rem; width: 100%; max-width: 100%; min-width: 0; padding: 1rem; overflow-x: auto; }
+  .arch-stage { position: relative; min-height: 210px; padding: 1rem; border: 1px solid var(--arch-line); border-radius: 14px; background: linear-gradient(160deg, rgba(255,255,255,.04), rgba(255,255,255,.012)); }
+  .arch-stage:not(:last-child)::after { content: "→"; position: absolute; z-index: 2; right: -.72rem; top: 47%; color: var(--arch-amber); font: 700 1rem var(--font-mono); }
+  .arch-stage__number { color: var(--arch-amber); font: 800 .72rem var(--font-mono); letter-spacing: .08em; }
+  .arch-stage h3 { margin: 1.55rem 0 .65rem; color: var(--parchment); font-size: 1rem; line-height: 1.25; }
+  .arch-stage p { margin: 0; color: var(--steel); font-size: .76rem; line-height: 1.55; }
+  .arch-stage__state { position: absolute; left: 1rem; bottom: 1rem; color: var(--arch-teal); font: 700 .6rem var(--font-mono); text-transform: uppercase; letter-spacing: .08em; }
+  .arch-topology { display: grid; grid-template-columns: 1fr 1.25fr 1.25fr 1fr; gap: 1rem; padding: 1rem; }
+  .arch-lane { min-width: 0; padding: 1rem; border-radius: 15px; background: rgba(5,7,10,.34); border: 1px solid var(--arch-line); }
+  .arch-lane__title { margin-bottom: .8rem; color: var(--steel); font: 750 .64rem var(--font-mono); letter-spacing: .09em; text-transform: uppercase; }
+  .arch-node { position: relative; padding: .8rem; margin-top: .55rem; border: 1px solid var(--arch-line); border-radius: 11px; background: rgba(255,255,255,.025); }
+  .arch-node strong { display: block; color: var(--parchment); font-size: .82rem; }
+  .arch-node span { display: block; margin-top: .25rem; color: var(--steel-dim); font-size: .68rem; line-height: 1.45; }
+  .arch-node[data-tone="teal"] { border-color: rgba(85,197,187,.28); }
+  .arch-node[data-tone="amber"] { border-color: rgba(227,163,77,.3); }
+  .arch-node[data-tone="red"] { border-color: rgba(242,106,99,.28); }
+  .arch-contract-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; }
+  .arch-contract { padding: 1.1rem; }
+  .arch-score { color: var(--arch-amber); font: 800 1.45rem var(--font-mono); }
+  .arch-contract h3 { margin: .75rem 0 .45rem; color: var(--parchment); font-size: .98rem; }
+  .arch-contract p { margin: 0; color: var(--steel); font-size: .76rem; line-height: 1.55; }
+  .arch-boundary { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; margin-top: 1rem; }
+  .arch-boundary__column { padding: 1.2rem; }
+  .arch-boundary__column h3 { margin: 0 0 .75rem; color: var(--parchment); font-size: 1rem; }
+  .arch-boundary__column ul { margin: 0; padding-left: 1.05rem; color: var(--steel); font-size: .78rem; line-height: 1.8; }
+  .arch-boundary__divider { display: grid; place-items: center; color: var(--arch-amber); font: 800 .64rem var(--font-mono); text-transform: uppercase; writing-mode: vertical-rl; letter-spacing: .1em; }
+  .arch-mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .arch-mode { padding: 1.35rem; }
+  .arch-mode__tag { color: var(--arch-teal); font: 800 .64rem var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+  .arch-mode--control .arch-mode__tag { color: var(--arch-amber); }
+  .arch-mode h3 { margin: .6rem 0 .45rem; color: var(--parchment); font-size: 1.25rem; }
+  .arch-mode p { margin: 0 0 .9rem; color: var(--steel); font-size: .82rem; line-height: 1.6; }
+  .arch-mode ul { margin: 0; padding-left: 1.05rem; color: var(--steel); font-size: .76rem; line-height: 1.75; }
+  .arch-recovery { display: grid; grid-template-columns: repeat(5, minmax(145px, 1fr)); gap: .7rem; width: 100%; max-width: 100%; min-width: 0; padding: 1rem; overflow-x: auto; }
+  .arch-recovery__step { min-width: 145px; padding: .95rem; border-radius: 12px; border: 1px solid var(--arch-line); background: rgba(255,255,255,.025); }
+  .arch-recovery__step small { color: var(--arch-amber); font: 750 .59rem var(--font-mono); text-transform: uppercase; }
+  .arch-recovery__step strong { display: block; margin: .65rem 0 .35rem; color: var(--parchment); font-size: .82rem; }
+  .arch-recovery__step span { color: var(--steel); font-size: .69rem; line-height: 1.45; }
+  .arch-component-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+  .arch-component { padding: 1.05rem; }
+  .arch-component code { color: var(--arch-teal); font: 700 .72rem var(--font-mono); }
+  .arch-component h3 { margin: .65rem 0 .4rem; color: var(--parchment); font-size: .93rem; }
+  .arch-component p { margin: 0; color: var(--steel); font-size: .74rem; line-height: 1.55; }
+  .arch-data-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 1rem; }
+  .arch-data-card { padding: 1.2rem; }
+  .arch-data-card h3 { margin: 0 0 .85rem; color: var(--parchment); font-size: 1rem; }
+  .arch-data-list { display: grid; gap: .5rem; }
+  .arch-data-row { display: grid; grid-template-columns: minmax(120px, .4fr) 1fr; gap: .8rem; padding: .7rem 0; border-top: 1px solid var(--arch-line); }
+  .arch-data-row code { color: var(--arch-amber); font: 700 .67rem var(--font-mono); overflow-wrap: anywhere; }
+  .arch-data-row span { color: var(--steel); font-size: .73rem; line-height: 1.5; }
+  .arch-callout { padding: 1.15rem; border-color: rgba(85,197,187,.3); background: linear-gradient(145deg, rgba(85,197,187,.075), rgba(17,20,25,.78)); }
+  .arch-callout strong { display: block; color: var(--parchment); font-size: .92rem; }
+  .arch-callout p { margin: .45rem 0 0; color: var(--steel); font-size: .75rem; line-height: 1.6; }
+  .arch-callout code { overflow-wrap: anywhere; }
+  .arch-footer { display: flex; justify-content: space-between; gap: 1rem; padding: 1.2rem 0; border-top: 1px solid var(--arch-line); color: var(--steel-dim); font: .66rem var(--font-mono); }
+  @media (max-width: 1050px) {
+    .arch-topology, .arch-contract-grid, .arch-component-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .arch-section__head, .arch-mode-grid, .arch-data-grid, .arch-topology, .arch-contract-grid, .arch-component-grid { grid-template-columns: 1fr; }
+    .arch-boundary { grid-template-columns: 1fr; }
+    .arch-boundary__divider { writing-mode: horizontal-tb; }
+    .arch-footer { flex-direction: column; }
+    .arch-diagram-hint { display: block; }
+  }
+</style>
+
+<div class="wrap architecture-page">
+  <div class="topbar">
+    <div class="brand">
+      <%= link_to projects_path, aria: { label: "Back to projects" } do %><div class="mark"></div><% end %>
+      <div class="word">SHOWRUNNER <span>· system architecture</span></div>
+    </div>
+    <div style="display:flex; gap:.7rem; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+      <%= link_to "← Dashboard", projects_path, class: "btn btn-ghost", style: "font:700 .67rem var(--font-mono); text-transform:uppercase;" %>
+      <div class="status-pill done"><div class="dot"></div><span>Runtime v4</span></div>
+    </div>
+  </div>
+
+  <header class="arch-hero">
+    <div class="arch-hero__content">
+      <div class="arch-kicker">Consistency-first generative film system</div>
+      <h1>From one story input to a <em>contract-bound</em> final cut.</h1>
+      <p>
+        Showrunner is a generic short-film pipeline that preserves narrative intent, recurring identity,
+        physical scale, objects, locations and temporal state while retaining creative freedom in camera,
+        lighting, rhythm and sound direction.
+      </p>
+      <div class="arch-meta">
+        <span class="arch-chip"><%= @architecture_version %></span>
+        <span class="arch-chip">Durable canonical media</span>
+        <span class="arch-chip">Two-stage visual QA</span>
+        <span class="arch-chip">Explicit producer control</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="arch-nav" aria-label="Architecture sections">
+    <a href="#diagram">Diagram</a><a href="#pipeline">Pipeline</a><a href="#topology">Topology</a><a href="#consistency">Consistency</a>
+    <a href="#modes">Modes</a><a href="#recovery">Recovery</a><a href="#components">Components</a><a href="#data">Data</a>
+  </nav>
+
+  <section class="arch-section" id="diagram">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Reference architecture</div><h2>End-to-end system diagram.</h2></div>
+      <p>The primary production path runs left to right. Supporting services below enforce durable state, provider boundaries and targeted recovery.</p>
+    </div>
+    <div class="arch-glass">
+      <div class="arch-diagram-shell">
+        <svg id="systemArchitectureDiagram" viewBox="0 0 1740 820" role="img" aria-labelledby="architectureDiagramTitle architectureDiagramDescription">
+          <title id="architectureDiagramTitle">Showrunner consistency-first system architecture</title>
+          <desc id="architectureDiagramDescription">Flow from user input through Rails orchestration, canonical pre-production, storyboard QA, video synthesis, final video QA and delivery, with Qwen, HappyHorse, durable media, PostgreSQL, Redis, audio and FFmpeg support.</desc>
+          <defs>
+            <linearGradient id="diagramBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12161b"/><stop offset="1" stop-color="#090d11"/></linearGradient>
+            <linearGradient id="nodeAmber" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b2117"/><stop offset="1" stop-color="#171718"/></linearGradient>
+            <linearGradient id="nodeTeal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#142524"/><stop offset="1" stop-color="#15191d"/></linearGradient>
+            <linearGradient id="nodeRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a191b"/><stop offset="1" stop-color="#17181c"/></linearGradient>
+            <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="9" stdDeviation="11" flood-color="#000" flood-opacity=".38"/></filter>
+            <marker id="arrowTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#55c5bb"/></marker>
+            <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#e3a34d"/></marker>
+            <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#f26a63"/></marker>
+            <marker id="arrowMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#78808c"/></marker>
+            <style>
+              .dg-lane{fill:url(#diagramBg);stroke:rgba(255,255,255,.08);stroke-width:1.2}.dg-lane-title{fill:#7f8793;font-size:11px;font-weight:800;letter-spacing:1.7px}.dg-node{stroke-width:1.4;filter:url(#nodeShadow)}.dg-node-amber{fill:url(#nodeAmber);stroke:#8c6331}.dg-node-teal{fill:url(#nodeTeal);stroke:#337d77}.dg-node-red{fill:url(#nodeRed);stroke:#8d403c}.dg-node-neutral{fill:#15191f;stroke:#3b424c}.dg-title{fill:#f0ece4;font-size:15px;font-weight:800}.dg-sub{fill:#939aa5;font-size:10.5px}.dg-chip{fill:#0c1014;stroke:rgba(255,255,255,.1)}.dg-chip-text{fill:#aeb5bf;font-size:9px;font-weight:700}.dg-flow{fill:none;stroke:#55c5bb;stroke-width:2.4;marker-end:url(#arrowTeal)}.dg-policy{fill:none;stroke:#e3a34d;stroke-width:2;marker-end:url(#arrowAmber)}.dg-failure{fill:none;stroke:#f26a63;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrowRed)}.dg-support{fill:none;stroke:#78808c;stroke-width:1.4;stroke-dasharray:5 5;marker-end:url(#arrowMuted)}.dg-label{fill:#aeb5bf;font-size:9px;font-weight:700}.dg-pass{fill:#55c5bb;font-size:9px;font-weight:800}.dg-fail{fill:#f26a63;font-size:9px;font-weight:800}
+            </style>
+          </defs>
+
+          <rect class="dg-lane" x="20" y="28" width="1700" height="438" rx="22"/>
+          <text class="dg-lane-title" x="48" y="58">PRIMARY PRODUCTION PATH · CONTROL + CONSISTENCY GATES</text>
+          <rect class="dg-lane" x="20" y="490" width="1700" height="300" rx="22"/>
+          <text class="dg-lane-title" x="48" y="520">DURABLE STATE · PROVIDERS · DELIVERY INFRASTRUCTURE</text>
+
+          <g aria-label="User and interface">
+            <rect class="dg-node dg-node-amber" x="48" y="126" width="196" height="146" rx="15"/>
+            <text class="dg-title" x="68" y="157">Producer / API</text><text class="dg-sub" x="68" y="178">Story input + direction</text>
+            <rect class="dg-chip" x="68" y="199" width="70" height="24" rx="12"/><text class="dg-chip-text" x="82" y="215">Automatic</text>
+            <rect class="dg-chip" x="145" y="199" width="79" height="24" rx="12"/><text class="dg-chip-text" x="158" y="215">Full Control</text>
+            <text class="dg-sub" x="68" y="246">Review + explicit authority</text>
+          </g>
+
+          <g aria-label="Input policy">
+            <rect class="dg-node dg-node-amber" x="304" y="90" width="236" height="110" rx="15"/>
+            <text class="dg-title" x="324" y="121">ProjectsController</text><text class="dg-sub" x="324" y="143">Request + one-shot grants</text><text class="dg-sub" x="324" y="161">Token forecast approval</text><text class="dg-sub" x="324" y="179">Mode configuration gate</text>
+            <rect class="dg-node dg-node-neutral" x="304" y="232" width="236" height="104" rx="15"/>
+            <text class="dg-title" x="324" y="263">ProductionTokenPredictor</text><text class="dg-sub" x="324" y="285">Likely range + repair reserve</text><text class="dg-sub" x="324" y="303">Historical calibration</text><text class="dg-sub" x="324" y="321">Explicit excess authorization</text>
+          </g>
+
+          <g aria-label="Pre-production orchestration">
+            <rect class="dg-node dg-node-teal" x="600" y="90" width="246" height="110" rx="15"/>
+            <text class="dg-title" x="620" y="121">ShowrunnerAgent</text><text class="dg-sub" x="620" y="143">Screenplay + asset profiling</text><text class="dg-sub" x="620" y="161">Continuity + storyboard</text><text class="dg-sub" x="620" y="179">Monotonic checkpoints</text>
+            <rect class="dg-node dg-node-neutral" x="600" y="232" width="246" height="104" rx="15"/>
+            <text class="dg-title" x="620" y="263">PreproductionCheckpoint</text><text class="dg-sub" x="620" y="285">screenplay → assets → storyboard</text><text class="dg-sub" x="620" y="303">Persist actual usage</text><text class="dg-sub" x="620" y="321">Resume without repurchase</text>
+          </g>
+
+          <g aria-label="Canonical consistency contract">
+            <rect class="dg-node dg-node-teal" x="906" y="72" width="252" height="118" rx="15"/>
+            <text class="dg-title" x="926" y="103">ProductionBible</text><text class="dg-sub" x="926" y="125">Identity · scale · materials</text><text class="dg-sub" x="926" y="143">Physics · agency · negatives</text><text class="dg-sub" x="926" y="161">Narrative / QA reference split</text>
+            <rect class="dg-node dg-node-teal" x="906" y="222" width="252" height="118" rx="15"/>
+            <text class="dg-title" x="926" y="253">Storyboard Contract</text><text class="dg-sub" x="926" y="275">Atomic action per shot</text><text class="dg-sub" x="926" y="293">Initial → final state</text><text class="dg-sub" x="926" y="311">Continuity plate + EDL</text>
+          </g>
+
+          <g aria-label="Storyboard QA gate">
+            <rect class="dg-node dg-node-red" x="1218" y="126" width="220" height="146" rx="15"/>
+            <text class="dg-title" x="1238" y="157">Storyboard Visual QA</text><text class="dg-sub" x="1238" y="179">Identity ≥ 85</text><text class="dg-sub" x="1238" y="197">Props ≥ 85 · Scale ≥ 90</text><text class="dg-sub" x="1238" y="215">Physics ≥ 85 · Overall ≥ 85</text>
+            <rect class="dg-chip" x="1238" y="232" width="180" height="24" rx="12"/><text class="dg-chip-text" x="1260" y="248">HARD PRE-VIDEO GATE</text>
+          </g>
+
+          <g aria-label="Video render and final QA">
+            <rect class="dg-node dg-node-red" x="1492" y="72" width="200" height="118" rx="15"/>
+            <text class="dg-title" x="1512" y="103">ProduceDramaJob</text><text class="dg-sub" x="1512" y="125">Single render claim</text><text class="dg-sub" x="1512" y="143">I2V / R2V / T2V</text><text class="dg-sub" x="1512" y="161">Actual cost accounting</text>
+            <rect class="dg-node dg-node-red" x="1492" y="222" width="200" height="118" rx="15"/>
+            <text class="dg-title" x="1512" y="253">Final Video QA</text><text class="dg-sub" x="1512" y="275">Temporal + visual audit</text><text class="dg-sub" x="1512" y="293">One bounded repair</text><text class="dg-sub" x="1512" y="311">Recoverable final cut</text>
+          </g>
+
+          <path class="dg-policy" d="M244 166H304"/><text class="dg-label" x="254" y="157">submit</text>
+          <path class="dg-policy" d="M422 200V232"/><text class="dg-label" x="431" y="220">estimate</text>
+          <path class="dg-flow" d="M540 144H600"/><text class="dg-label" x="551" y="135">enqueue</text>
+          <path class="dg-flow" d="M846 144H906"/><text class="dg-label" x="857" y="135">compile</text>
+          <path class="dg-flow" d="M1158 198H1218"/><text class="dg-label" x="1166" y="189">audit</text>
+          <path class="dg-flow" d="M1438 166H1492"/><text class="dg-pass" x="1448" y="156">PASS</text>
+          <path class="dg-flow" d="M1592 190V222"/><text class="dg-label" x="1601" y="211">clips</text>
+          <path class="dg-failure" d="M1328 272V398H1032V340"/><text class="dg-fail" x="1137" y="389">FAIL → TARGETED KEYFRAME REPAIR</text>
+          <path class="dg-failure" d="M1492 281H1458V410H1592V340"/><text class="dg-fail" x="1470" y="430">BOUNDED CLIP REPAIR / EXPLICIT RISK</text>
+
+          <g aria-label="Qwen intelligence"><rect class="dg-node dg-node-amber" x="76" y="572" width="236" height="124" rx="15"/><text class="dg-title" x="96" y="603">QwenRouter</text><text class="dg-sub" x="96" y="625">Structured narrative calls</text><text class="dg-sub" x="96" y="643">Multimodal visual QA</text><text class="dg-sub" x="96" y="661">Shared token ledger</text><text class="dg-sub" x="96" y="679">Budget preflight</text></g>
+          <g aria-label="Application state"><rect class="dg-node dg-node-neutral" x="368" y="572" width="236" height="124" rx="15"/><text class="dg-title" x="388" y="603">PostgreSQL + Redis</text><text class="dg-sub" x="388" y="625">Manifest + runtime outcome</text><text class="dg-sub" x="388" y="643">Job queues + unique claim</text><text class="dg-sub" x="388" y="661">Provider task recovery</text><text class="dg-sub" x="388" y="679">ActionCable progress</text></g>
+          <g aria-label="Durable media"><rect class="dg-node dg-node-teal" x="660" y="548" width="310" height="172" rx="15"/><text class="dg-title" x="680" y="579">CanonicalMediaStore</text><text class="dg-sub" x="680" y="601">SHA-256 content-addressed media</text><text class="dg-sub" x="680" y="619">Stable character / prop / location refs</text><text class="dg-sub" x="680" y="637">Storyboard + continuity plates</text><text class="dg-sub" x="680" y="655">Signed URL fallback at provider boundary</text><rect class="dg-chip" x="680" y="674" width="126" height="25" rx="12"/><text class="dg-chip-text" x="698" y="691">BYTE-IDENTICAL</text><rect class="dg-chip" x="815" y="674" width="135" height="25" rx="12"/><text class="dg-chip-text" x="832" y="691">NO REPURCHASE</text></g>
+          <g aria-label="HappyHorse synthesis"><rect class="dg-node dg-node-red" x="1026" y="572" width="236" height="124" rx="15"/><text class="dg-title" x="1046" y="603">HappyHorseClient</text><text class="dg-sub" x="1046" y="625">T2I canonical frames</text><text class="dg-sub" x="1046" y="643">I2V composition anchor</text><text class="dg-sub" x="1046" y="661">R2V identity anchor</text><text class="dg-sub" x="1046" y="679">T2V fallback</text></g>
+          <g aria-label="Final assembly"><rect class="dg-node dg-node-amber" x="1318" y="548" width="354" height="172" rx="15"/><text class="dg-title" x="1338" y="579">AudioDirector + FFmpeg Editor</text><text class="dg-sub" x="1338" y="601">Narration and soundtrack contract</text><text class="dg-sub" x="1338" y="619">Deterministic EDL assembly</text><text class="dg-sub" x="1338" y="637">No debug labels or calibration overlays</text><text class="dg-sub" x="1338" y="655">Publish /dramas/drama_:id.mp4</text><rect class="dg-chip" x="1338" y="674" width="152" height="25" rx="12"/><text class="dg-chip-text" x="1357" y="691">FINAL CUT READY</text></g>
+
+          <path class="dg-support" d="M194 572V426H722V200"/><text class="dg-label" x="207" y="443">story + vision intelligence</text>
+          <path class="dg-support" d="M486 572V432H722V336"/><text class="dg-label" x="500" y="449">checkpoints + jobs</text>
+          <path class="dg-support" d="M815 548V450H1032V340"/><text class="dg-label" x="836" y="467">durable references</text>
+          <path class="dg-support" d="M1144 572V454H1592V190"/><text class="dg-label" x="1170" y="471">synthesis tasks</text>
+          <path class="dg-support" d="M1495 548V470H1592V340"/><text class="dg-label" x="1510" y="487">assemble + deliver</text>
+        </svg>
+      </div>
+      <div class="arch-diagram-hint">Scroll horizontally to inspect the full system →</div>
+      <div class="arch-diagram-legend" aria-label="Diagram legend">
+        <span><i></i>Production flow</span><span><i class="is-amber"></i>Policy / authority</span><span><i class="is-red"></i>Failure and repair loop</span><span><i class="is-dashed"></i>Supporting dependency</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="arch-section" id="pipeline">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Production lifecycle</div><h2>Six durable stages, not one opaque generation call.</h2></div>
+      <p>Every expensive boundary follows a persisted checkpoint. A failed stage can resume from approved work instead of recreating the production.</p>
+    </div>
+    <div class="arch-pipeline arch-glass">
+      <% @pipeline_stages.each do |number, title, description| %>
+        <article class="arch-stage">
+          <div class="arch-stage__number"><%= number %></div><h3><%= title %></h3><p><%= description %></p>
+          <div class="arch-stage__state">Persisted checkpoint</div>
+        </article>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="arch-section" id="topology">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">System topology</div><h2>Control plane, intelligence plane and media plane.</h2></div>
+      <p>Rails owns state and policy. Qwen and HappyHorse provide bounded intelligence and synthesis. FFmpeg deterministically assembles the approved result.</p>
+    </div>
+    <div class="arch-topology arch-glass">
+      <div class="arch-lane">
+        <div class="arch-lane__title">Interface</div>
+        <div class="arch-node" data-tone="amber"><strong>Projects UI</strong><span>Prompt, forecast approval, direction and production history.</span></div>
+        <div class="arch-node"><strong>Review Workspace</strong><span>Script, canonical assets, storyboard, QA and recovery controls.</span></div>
+        <div class="arch-node" data-tone="teal"><strong>ActionCable</strong><span>Live checkpoint, render and outcome events.</span></div>
+      </div>
+      <div class="arch-lane">
+        <div class="arch-lane__title">Rails control plane</div>
+        <div class="arch-node" data-tone="amber"><strong>ProjectsController</strong><span>Validates intent, enforces Full Control choices and issues one-shot authorizations.</span></div>
+        <div class="arch-node" data-tone="teal"><strong>ShowrunnerAgent</strong><span>Pre-production orchestration with monotonic, resumable checkpoints.</span></div>
+        <div class="arch-node" data-tone="red"><strong>ProduceDramaJob</strong><span>Single-render claim, synthesis, final QA, accounting and explicit outcome.</span></div>
+        <div class="arch-node"><strong>Sidekiq + Redis</strong><span>Asynchronous jobs without duplicate planning/render claims.</span></div>
+      </div>
+      <div class="arch-lane">
+        <div class="arch-lane__title">Consistency intelligence</div>
+        <div class="arch-node"><strong>ScriptConsistencyValidator</strong><span>Repairs safe ambiguities and blocks hard narrative contradictions.</span></div>
+        <div class="arch-node"><strong>ProductionBible + ContinuityPlanner</strong><span>Canonical entities, scale, physics, agency and per-shot state.</span></div>
+        <div class="arch-node" data-tone="teal"><strong>VisualConsistencyEvaluator</strong><span>Storyboard vision QA against narrative and QA-only references.</span></div>
+        <div class="arch-node" data-tone="red"><strong>VideoConsistencyEvaluator</strong><span>Temporal and visual audit of generated clips with bounded repair.</span></div>
+      </div>
+      <div class="arch-lane">
+        <div class="arch-lane__title">Media + providers</div>
+        <div class="arch-node" data-tone="amber"><strong>QwenRouter</strong><span>Structured narrative and multimodal QA with a shared token ledger.</span></div>
+        <div class="arch-node" data-tone="red"><strong>HappyHorseClient</strong><span>T2I, I2V, R2V and T2V provider boundary.</span></div>
+        <div class="arch-node" data-tone="teal"><strong>CanonicalMediaStore</strong><span>Content-addressed, durable copies of validated visual references.</span></div>
+        <div class="arch-node"><strong>AudioDirector + FFmpeg</strong><span>Required narration/music resolution and deterministic final assembly.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="arch-section" id="consistency">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Consistency contract</div><h2>Visual invariants are hard gates.</h2></div>
+      <p>Cinematic style may vary. Identity, canonical geometry and story state may not. A high average never compensates for one failed critical dimension.</p>
+    </div>
+    <div class="arch-contract-grid">
+      <% labels = { "identity_score" => ["Identity", "Face, body proportions, wardrobe and distinctive features."], "prop_score" => ["Canonical objects", "Color, material, dimensions, design and recurring-object fidelity."], "scale_score" => ["Relative scale", "Same-class geometry and scene-relative dimensionality."], "physics_plausibility_score" => ["Physics", "Attachment, contact, motion, causality and permitted agency."] } %>
+      <% labels.each do |key, (title, description)| %>
+        <article class="arch-contract arch-glass"><div class="arch-score">≥ <%= @visual_dimension_thresholds.fetch(key) %></div><h3><%= title %></h3><p><%= description %></p></article>
+      <% end %>
+    </div>
+    <div class="arch-callout arch-glass" style="margin-top:1rem;">
+      <strong>Overall storyboard threshold: <%= @visual_pass_threshold %>/100 — with every dimension passing its own hard minimum.</strong>
+      <p>Calibration sheets, grids and technical labels are isolated as QA-only evidence. They are excluded from narrative image inputs and final frames.</p>
+    </div>
+    <div class="arch-boundary">
+      <div class="arch-boundary__column arch-glass"><h3>Locked across scenes</h3><ul><li>Character and human identity</li><li>Body and object proportions</li><li>Wardrobe, colors and materials</li><li>Recurring props and location geometry</li><li>Attachment and physical constraints</li><li>Initial/final state continuity</li></ul></div>
+      <div class="arch-boundary__divider">Creative boundary</div>
+      <div class="arch-boundary__column arch-glass"><h3>Directed creatively</h3><ul><li>Composition and lens selection</li><li>Camera movement and coverage</li><li>Lighting and color treatment</li><li>Editing rhythm and transitions</li><li>Music and voice treatment</li><li>Performance within canonical agency</li></ul></div>
+    </div>
+  </section>
+
+  <section class="arch-section" id="modes">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Production authority</div><h2>Automatic resolves; Full Control obeys.</h2></div>
+      <p>Neither mode silently weakens narrative or asset contracts. They differ in who resolves creative defaults and whether repairs happen automatically.</p>
+    </div>
+    <div class="arch-mode-grid">
+      <article class="arch-mode arch-glass"><div class="arch-mode__tag">Automatic</div><h3>Policy-driven completion</h3><p>The app selects safe defaults and works toward a complete assembled film.</p><ul><li>Resolves unspecified direction and audio choices</li><li>Performs one bounded automatic visual repair</li><li>Reuses approved clips and checkpoints</li><li>Stops only on non-overridable contract failures</li></ul></article>
+      <article class="arch-mode arch-mode--control arch-glass"><div class="arch-mode__tag">Full Control</div><h3>Explicit producer authority</h3><p>The app requires choices and executes the producer's requested action.</p><ul><li>No hidden cinematic defaults</li><li>Regenerates only the requested asset or frame</li><li>No automatic clip repair unless explicitly requested</li><li>Can accept visual-only risk for one exact render contract</li></ul></article>
+    </div>
+  </section>
+
+  <section class="arch-section" id="recovery">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Cost and failure containment</div><h2>Recovery is monotonic and scoped.</h2></div>
+      <p>The system preserves successful work, exposes the blocker and prevents an unbounded regenerate–audit loop.</p>
+    </div>
+    <div class="arch-recovery arch-glass">
+      <div class="arch-recovery__step"><small>Before create</small><strong>Token forecast</strong><span>Predicts likely range, excess and repair reserve from script complexity and history.</span></div>
+      <div class="arch-recovery__step"><small>Before provider</small><strong>Budget gate</strong><span>Requires forecast approval or a one-shot “spend beyond limit” authorization.</span></div>
+      <div class="arch-recovery__step"><small>After each stage</small><strong>Checkpoint</strong><span>Persists screenplay, assets, storyboard and actual ledger usage.</span></div>
+      <div class="arch-recovery__step"><small>On QA failure</small><strong>Targeted repair</strong><span>Regenerates only failed frames or clips; measured passes are reused.</span></div>
+      <div class="arch-recovery__step"><small>On final failure</small><strong>Recoverable cut</strong><span>Preserves an assembled cut for explicit acceptance without another paid render.</span></div>
+    </div>
+    <div class="arch-callout arch-glass" style="margin-top:1rem;"><strong>Durable reference rule</strong><p>Signed provider URLs are copied while valid into <code>/public/generated/projects/:id/media/:sha256.ext</code>. UI, QA and video generation fall back to that exact validated file instead of purchasing a replacement. Local files become data URIs only at the provider boundary and are never stored as base64 in the database.</p></div>
+  </section>
+
+  <section class="arch-section" id="components">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Core implementation map</div><h2>Components and their single responsibility.</h2></div>
+      <p>The production manifest is the contract shared by these services; no provider is allowed to become the source of truth.</p>
+    </div>
+    <div class="arch-component-grid">
+      <% components = [
+        ["ProductionTokenPredictor", "Forecast", "Estimates narrative, asset, storyboard, QA, video and repair token demand."],
+        ["ProductionModePolicy", "Authority", "Resolves Automatic defaults and rejects incomplete Full Control configurations."],
+        ["PreproductionCheckpoint", "Persistence", "Makes planning resumable and records cost after every durable stage."],
+        ["AssetProfiler", "Canonical assets", "Extracts source-faithful characters, humans, props, locations, identity and scale."],
+        ["ProductionBible", "Visual contract", "Separates narrative references from technical QA evidence and defines invariants."],
+        ["ScreenplayPlanner", "Timing", "Normalizes scene/shot timing and creates the authoritative edit decision list."],
+        ["StoryboardPromptCompiler", "Shot semantics", "Compiles one atomic visible action, state transition and camera contract per shot."],
+        ["ContinuityPlatePlanner", "Spatial anchor", "Creates a reusable master composition for scale and location continuity."],
+        ["CanonicalMediaStore", "Durable media", "Validates, hashes, deduplicates and persists approved visual references."],
+        ["ConsistencyOverridePolicy", "Scoped override", "Binds producer risk acceptance to the exact storyboard/render digest."],
+        ["VideoSynth", "Clip strategy", "Chooses keyframe I2V, character R2V or T2V and reuses provider tasks safely."],
+        ["AudioDirector + Editor", "Delivery", "Resolves audio requirements and assembles a clean film without debug overlays."]
+      ] %>
+      <% components.each do |name, role, description| %><article class="arch-component arch-glass"><code><%= name %></code><h3><%= role %></h3><p><%= description %></p></article><% end %>
+    </div>
+  </section>
+
+  <section class="arch-section" id="data">
+    <div class="arch-section__head">
+      <div><div class="arch-eyebrow">Persistence model</div><h2>The manifest is an auditable production ledger.</h2></div>
+      <p>PostgreSQL stores the declarative contract and runtime outcomes. Binary references remain content-addressed on disk; provider task IDs remain recoverable.</p>
+    </div>
+    <div class="arch-data-grid">
+      <article class="arch-data-card arch-glass"><h3>Project manifest</h3><div class="arch-data-list">
+        <div class="arch-data-row"><code>screenplay</code><span>Scenes, atomic shots, initial/final states, continuity bindings and timing.</span></div>
+        <div class="arch-data-row"><code>assets</code><span>Canonical profiles plus remote and durable reference roles.</span></div>
+        <div class="arch-data-row"><code>production_bible</code><span>Entity invariants, scale anchors, physics, agency and negative constraints.</span></div>
+        <div class="arch-data-row"><code>consistency_report</code><span>Structural, script, source-fidelity and storyboard vision results.</span></div>
+        <div class="arch-data-row"><code>video_consistency_report</code><span>Per-clip final QA, repair attempts and explicit risk outcome.</span></div>
+        <div class="arch-data-row"><code>render_runtime</code><span>Version, job claim, start/finish, terminal outcome and actionable error.</span></div>
+      </div></article>
+      <article class="arch-data-card arch-glass"><h3>Operational safeguards</h3><div class="arch-data-list">
+        <div class="arch-data-row"><code>SHA-256 media</code><span>Byte-identical deduplication and stable UI refresh.</span></div>
+        <div class="arch-data-row"><code>20 MB cap</code><span>Bounded download and provider payload size.</span></div>
+        <div class="arch-data-row"><code>Image signatures</code><span>PNG, JPEG and WebP payload verification.</span></div>
+        <div class="arch-data-row"><code>SSRF guard</code><span>Rejects private, loopback and link-local media hosts.</span></div>
+        <div class="arch-data-row"><code>One-shot grants</code><span>Token overrun and visual-risk authority are consumed by one operation.</span></div>
+        <div class="arch-data-row"><code>Idempotent claims</code><span>Stale or duplicate planning/render jobs cannot reopen completed work.</span></div>
+      </div></article>
+    </div>
+  </section>
+
+  <footer class="arch-footer"><span>SHOWRUNNER · consistency-first film orchestration</span><span>Architecture runtime: <%= @architecture_version %></span></footer>
+</div>

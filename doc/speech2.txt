@@ -1,0 +1,17 @@
+SHOWRUNNER UI FLOW — TWO-MINUTE HACKATHON SPEECH
+
+The Showrunner experience begins on the project dashboard. The user enters either a story idea or a detailed screenplay, then selects duration, genre, audience, resolution, adaptation style, camera treatment, color, music, and voice.
+
+Before creation, the Token Consumption Predictor estimates a likely production range from screenplay length, scene density, visual complexity, recurring entities, physical interactions, scale-sensitive subjects, both QA stages, and a repair reserve. If the budget is insufficient, the user increases it or explicitly approves the predicted excess.
+
+The user then chooses one of two modes. In Automatic mode, Showrunner resolves unspecified cinematic and audio choices, advances through the pipeline, and performs one bounded repair when QA fails. Its objective is a complete film using safe defaults. In Full Control, important choices must be explicit. The system pauses for review, regenerates only what the producer requests, and can accept visual-only risk for one exact render.
+
+After submission, the workspace presents three review tabs. The first contains the screenplay, scene objectives, shot actions, timing, and edit structure. The second contains canonical character, prop, and location profiles defining identity, wardrobe, materials, dimensions, physics, and permitted movement. The third presents the storyboard, where every shot has a keyframe, atomic action, camera instructions, continuity state, and duration.
+
+The Production Pipeline bar tracks six stages: Narrative, Visual Bible, Storyboard, Consistency QA, Video Production, and Edit and Delivery. Live events appear in the pipeline logger.
+
+Before rendering, the Consistency Gate reports structural quality, script consistency, source-to-asset fidelity, and storyboard vision QA. Failed keyframes can be regenerated individually, scenes can be refreshed, or QA can be retried without image credits. If tokens are exhausted, a one-time control authorizes additional spending for only the next operation.
+
+Once approved, the UI starts video synthesis and displays live progress. Generated clips receive final-video QA. Successful clips are reused, failed clips receive targeted repair, and Full Control may explicitly accept remaining visual risk.
+
+Finally, Showrunner assembles the approved clips, narration, music, timing, and transitions. The status becomes Final Cut Ready, and the video appears in the workspace for playback, review, and download.

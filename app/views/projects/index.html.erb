@@ -1,0 +1,507 @@
+<% content_for :title, "Showrunner — AI film production" %>
+
+<div class="home-shell">
+  <header class="home-nav" aria-label="Primary navigation">
+    <%= link_to projects_path, class: "brand", aria: { label: "Showrunner home" } do %>
+      <span class="mark" aria-hidden="true"></span>
+      <span class="word">SHOWRUNNER <span>· studio cloud</span></span>
+    <% end %>
+
+    <nav class="home-nav__actions" aria-label="Application sections">
+      <%= link_to architecture_path, class: "nav-link" do %>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M7 4v6m10-6v6M5 14h6v6H5zm8 0h6v6h-6z"/></svg>
+        <span>Architecture</span>
+      <% end %>
+      <span class="status-pill done"><span class="dot"></span>Studio online</span>
+    </nav>
+  </header>
+
+  <% if flash[:notice] %><div class="alert alert-notice" role="status"><%= flash[:notice] %></div><% end %>
+  <% if flash[:alert] %><div class="alert alert-alert" role="alert"><%= flash[:alert] %></div><% end %>
+
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="eyebrow"><span></span> AI production workspace</div>
+    <h1 id="home-title">Turn an idea into a <em>consistent cinematic world.</em></h1>
+    <p>Write the premise. Showrunner builds the narrative, visual bible, storyboard and final cut through consistency-gated production.</p>
+  </section>
+
+  <%= form_with model: @new_project, local: true, html: { class: "production-workspace", id: "new-production-form" } do |f| %>
+    <%= hidden_field_tag :token_forecast_digest, params[:token_forecast_digest], id: "token-forecast-digest" %>
+    <section class="glass-card composer-card" aria-labelledby="composer-heading">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">New production</span>
+          <h2 id="composer-heading">What do you want to create?</h2>
+        </div>
+        <span class="autosave-label"><span></span> Ready</span>
+      </div>
+
+      <% if @new_project.errors.any? %>
+        <div class="form-errors" id="production-form-errors" role="alert" tabindex="-1">
+          <strong>Review the highlighted information</strong>
+          <ul><% @new_project.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+        </div>
+      <% end %>
+
+      <div class="story-composer">
+        <%= f.label :prompt, "Story idea or screenplay", class: "sr-only" %>
+        <%= f.text_area :prompt,
+          placeholder: "A forgotten astronaut discovers that the signal guiding her home is being sent by her future self…",
+          id: "project-prompt-input",
+          class: "story-input",
+          rows: 5,
+          required: true,
+          aria: { describedby: "prompt-help" } %>
+        <div class="composer-toolbar">
+          <span id="prompt-help"><span id="prompt-count">0</span> characters · describe characters, goal and conflict</span>
+          <button class="icon-text-button" type="button" id="prompt-example-button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-3.7 10.7c.5.4.7.9.7 1.5V16h6v-.8c0-.6.3-1.1.7-1.5A6 6 0 0 0 12 3Zm-3 17h6m-5-4h4"/></svg>
+            Inspire me
+          </button>
+        </div>
+      </div>
+
+      <div id="copilot-suggestions-box" class="copilot-suggestions" aria-live="polite"></div>
+
+      <fieldset class="mode-selector">
+        <legend>Production mode</legend>
+        <label class="mode-option">
+          <%= radio_button_tag :pipeline_mode, "agentic", params[:pipeline_mode] != "control", id: "mode-agentic" %>
+          <span class="mode-option__surface">
+            <span class="mode-option__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 3-7 11h6l-1 7 7-11h-6z"/></svg></span>
+            <span><strong>Automatic</strong><small>Resolves omitted creative and audio settings, repairs, then runs the pipeline</small></span>
+            <span class="mode-check" aria-hidden="true"></span>
+          </span>
+        </label>
+        <label class="mode-option">
+          <%= radio_button_tag :pipeline_mode, "control", params[:pipeline_mode] == "control", id: "mode-control" %>
+          <span class="mode-option__surface">
+            <span class="mode-option__icon teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2m4 0h10M14 4v6M6 14v6"/></svg></span>
+            <span><strong>Full Control</strong><small>Requires explicit choices and pauses before any video render</small></span>
+            <span class="mode-check" aria-hidden="true"></span>
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="core-settings">
+        <div class="field">
+          <label for="genre-select">Genre</label>
+          <%= select_tag :genre, options_for_select([["Auto-detect", ""], ["Science fiction", "sci_fi"], ["Thriller / mystery", "thriller"], ["Fantasy / myth", "fantasy"], ["Drama", "drama"], ["Horror / suspense", "horror"]], params[:genre]), id: "genre-select", class: "glass-select" %>
+        </div>
+        <div class="field">
+          <%= f.label :duration, "Duration" %>
+          <div class="input-with-suffix"><%= f.number_field :duration, value: @new_project.duration || 75, min: 10, max: 300, id: "project-duration", class: "glass-input" %><span>sec</span></div>
+        </div>
+        <div class="field">
+          <%= f.label :resolution, "Resolution" %>
+          <%= f.select :resolution, [["720p · Standard", "720P"], ["1080p · High", "1080P"]], {}, id: "project-resolution", class: "glass-select" %>
+        </div>
+      </div>
+
+      <details class="advanced-settings" id="advanced-settings">
+        <summary><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10m4 0h2M4 17h2m4 0h10M14 4v6M6 14v6"/></svg> Creative and technical controls</span><small id="advanced-settings-requirement">Automatic defaults</small></summary>
+        <div class="advanced-grid">
+          <div class="field field-wide"><label for="brain_dump_textarea">Notes and world lore</label><%= text_area_tag :brain_dump, params[:brain_dump], id: "brain_dump_textarea", rows: 3, placeholder: "Rules of the world, character details, required moments…", class: "glass-textarea" %></div>
+          <div class="field"><label for="adaptation-mode-select">Adaptation</label><%= select_tag :adaptation_mode, options_for_select([["Faithful to prompt", "faithful"], ["Creative transmutation", "transmuted"]], params[:adaptation_mode] || "faithful"), id: "adaptation-mode-select", class: "glass-select" %></div>
+          <div class="field"><label for="audience-input">Audience</label><%= text_field_tag :audience, params[:audience], placeholder: "Auto", id: "audience-input", class: "glass-input" %></div>
+          <div class="field"><label for="camera-style">Camera language</label><%= select_tag :camera_style, options_for_select([["Auto", ""], ["Handheld · immediate", "handheld_shaky"], ["Slow and composed", "slow_pans_fixed"], ["Angular · tense", "dutch_angles_extreme"]], params[:camera_style]), id: "camera-style", class: "glass-select" %></div>
+          <div class="field"><label for="color-grade">Color language</label><%= select_tag :color_grade, options_for_select([["Auto", ""], ["Cool neon", "cyberpunk"], ["Warm natural", "warm"], ["Monochrome", "noir"], ["Film stock", "kodak"], ["Desaturated", "apocalyptic"]], params[:color_grade]), id: "color-grade", class: "glass-select" %></div>
+          <div class="field"><label for="music-style">Sound direction</label><%= select_tag :music_style, options_for_select([["Auto", ""], ["No soundtrack", "none"], ["Orchestral", "epic_orchestral"], ["Electronic", "cyberpunk_synths"], ["Traditional", "traditional_japanese"], ["Ambient", "ambient"]], params[:music_style]), id: "music-style", class: "glass-select" %></div>
+          <div class="field"><label for="voice-style">Narration</label><%= select_tag :voice_style, options_for_select([["Auto", ""], ["No narration", "none"], ["Intimate", "female_whisper"], ["Deep", "male_deep"], ["Synthetic", "robotic_flat"]], params[:voice_style]), id: "voice-style", class: "glass-select" %></div>
+          <div class="field"><%= f.label :token_budget, "Production token limit" %><div class="input-with-suffix"><%= f.number_field :token_budget, value: @new_project.token_budget || 18000, min: 5000, max: 500000, id: "token-budget", class: "glass-input" %><span>tok</span></div></div>
+          <div class="field"><label for="max-scenes">Scene limit</label><%= number_field_tag :max_scenes, params[:max_scenes], min: 2, max: 20, placeholder: "Auto", id: "max-scenes", class: "glass-input" %></div>
+          <div class="field"><label for="seed">Visual seed</label><%= number_field_tag :seed, params[:seed], placeholder: "Random", id: "seed", class: "glass-input" %></div>
+          <label class="switch-field field-wide" for="dry-run-checkbox"><%= f.check_box :dry_run, id: "dry-run-checkbox" %><span class="switch" aria-hidden="true"></span><span><strong>Storyboard sandbox</strong><small>Use still-image previews without video rendering cost</small></span></label>
+        </div>
+      </details>
+
+      <div class="submit-row">
+        <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v5c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-3Zm-3 9 2 2 4-4"/></svg> Canonical references and continuity are enforced automatically.</p>
+        <button type="submit" class="btn btn-primary create-production-button" id="create-production-button"><span>Start production</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+      </div>
+    </section>
+
+    <aside class="glass-card production-preview" aria-labelledby="preview-heading">
+      <div class="section-heading preview-heading">
+        <div><span class="section-kicker">Production forecast</span><h2 id="preview-heading">Your pipeline</h2></div>
+        <span class="forecast-live">Live estimate</span>
+      </div>
+
+      <ol class="pipeline-map">
+        <% [
+          ["Narrative design", "Screenplay, scenes and edit map"],
+          ["Visual bible", "Canonical people, objects and worlds"],
+          ["Storyboard", "Shot composition and spatial continuity"],
+          ["Consistency QA", "Identity, scale, physics and repair"],
+          ["Video production", "Clips, motion and final audit"],
+          ["Edit & delivery", "Timing, sound and final cut"]
+        ].each_with_index do |(title, copy), index| %>
+          <li class="pipeline-map__step <%= index.zero? ? 'is-active' : '' %>"><span class="pipeline-number"><%= format('%02d', index + 1) %></span><span><strong><%= title %></strong><small><%= copy %></small></span><span class="pipeline-state"><%= index.zero? ? 'Ready' : '' %></span></li>
+        <% end %>
+      </ol>
+
+      <div class="forecast-grid" aria-live="polite">
+        <div><small>Scenes</small><strong id="estimate-scenes">5–7</strong></div>
+        <div><small>Shots</small><strong id="estimate-shots">14–20</strong></div>
+        <div><small>Video credits</small><strong id="estimate-credits">≈ 13</strong></div>
+        <div><small>Review gates</small><strong id="estimate-gates">Automatic</strong></div>
+        <div><small>Expected tokens</small><strong id="estimate-total-tokens">Waiting for script</strong></div>
+        <div><small>Safe budget</small><strong id="estimate-safe-budget">—</strong></div>
+      </div>
+      <div class="token-forecast-panel" id="token-forecast-panel" data-state="idle" aria-live="polite">
+        <div class="token-forecast-panel__head">
+          <span>Token consumption predictor</span>
+          <strong id="token-forecast-confidence">Awaiting prompt</strong>
+        </div>
+        <div class="token-forecast-range">
+          <span><small>Likely range</small><strong id="token-forecast-range">—</strong></span>
+          <span><small>Potential excess</small><strong id="token-forecast-overrun">—</strong></span>
+        </div>
+        <div class="token-forecast-meter"><span id="token-forecast-meter-fill"></span></div>
+        <p id="token-forecast-explanation">Enter the screenplay to forecast narrative planning, canonical assets, visual QA, likely repairs and final-video QA.</p>
+        <div class="token-forecast-breakdown" id="token-forecast-breakdown"></div>
+        <label class="token-overrun-approval" id="token-overrun-approval" hidden>
+          <%= check_box_tag :approve_token_overrun, "1", false, id: "approve-token-overrun" %>
+          <span><strong id="token-overrun-approval-title">Approve predicted token excess</strong><small>This approval is bound to this exact script and configuration and cannot bypass consistency gates.</small></span>
+        </label>
+        <button type="button" class="token-safe-budget-button" id="apply-safe-token-budget" hidden>
+          Use the predicted safe budget
+        </button>
+      </div>
+      <div class="forecast-note"><span class="forecast-note__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5m0 3h.01M10.3 4.4 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 4.4a2 2 0 0 0-3.4 0Z"/></svg></span><p><strong>Estimate, not a charge.</strong> Repairs may change the final credit use. Showrunner reuses validated references whenever possible.</p></div>
+    </aside>
+  <% end %>
+
+  <section class="recent-productions" aria-labelledby="recent-heading">
+    <div class="recent-header"><div><span class="section-kicker">Workspace</span><h2 id="recent-heading">Recent productions</h2></div><span class="production-count"><%= pluralize(@projects.size, "production") %></span></div>
+
+    <% if @projects.empty? %>
+      <div class="glass-card empty-productions"><span class="empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 8-4 8 4-8 4-8-4Zm0 5 8 4 8-4M4 17l8 4 8-4"/></svg></span><h3>Your studio is ready</h3><p>Your productions will appear here with their current stage, consistency gates and next action.</p></div>
+    <% else %>
+      <div class="production-list">
+        <% @projects.each do |project| %>
+          <% manifest = project.manifest || {} %>
+          <% shots = Array(manifest.dig("screenplay", "scenes")).flat_map { |scene| Array(scene["shots"]) } %>
+          <% thumbnail = shots.filter_map do |shot|
+               stable = shot["stable_image_url"]
+               StableMedia.local_available?(stable) ? stable : shot["image_url"].presence
+             end.first %>
+          <% consistency = manifest["consistency_report"] || {} %>
+          <% score = consistency["structural_score"] %>
+          <% status_content = {
+            "planning" => ["Building pre-production", "Open live production", 22],
+            "awaiting_storyboard_approval" => ["Ready for review", "Review storyboard", 58],
+            "rendering" => ["Producing final film", "View live production", 78],
+            "completed" => ["Final cut ready", "Watch final cut", 100],
+            "failed" => ["Needs attention", "Review and retry", 45]
+          }.fetch(project.status, [project.status.to_s.humanize, "Open production", 10]) %>
+          <article class="glass-card production-card status-<%= project.status %>">
+            <%= link_to project_path(project), class: "production-card__main", aria: { label: "#{status_content[1]}: #{project.title.presence || 'Untitled production'}" } do %>
+              <div class="production-thumb <%= 'has-image' if thumbnail %>" <% if thumbnail %>style="background-image: url('<%= thumbnail %>')"<% end %>><% unless thumbnail %><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 5 5-5 5m7-10 5 5-5 5m7-10 2 2v6l-2 2"/></svg><% end %><span><%= project.resolution %></span></div>
+              <div class="production-card__body">
+                <div class="production-title-row"><div><span class="project-status"><span></span><%= status_content[0] %></span><h3><%= project.title.presence || "Untitled production" %></h3></div><span class="project-time"><%= time_ago_in_words(project.updated_at) %> ago</span></div>
+                <p><%= project.prompt.truncate(150) %></p>
+                <div class="project-progress"><span style="width: <%= status_content[2] %>%"></span></div>
+                <div class="project-facts"><span><strong><%= project.duration %>s</strong> duration</span><span><strong><%= shots.size.nonzero? || '—' %></strong> shots</span><span><strong><%= score || '—' %></strong> consistency</span><span><strong><%= project.video_credits_used %></strong> credits</span></div>
+              </div>
+              <span class="project-next"><span><small>Next action</small><strong><%= status_content[1] %></strong></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>
+            <% end %>
+            <%= button_to project_path(project), method: :delete, form: { data: { turbo_confirm: "Delete '#{project.title.presence || 'this production'}'? This cannot be undone." } }, class: "project-delete", title: "Delete production", aria: { label: "Delete #{project.title.presence || 'production'}" } do %><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16m-10 4v6m4-6v6M9 7l1-3h4l1 3m-8 0 1 14h8l1-14"/></svg><% end %>
+          </article>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+</div>
+
+<script>
+  (() => {
+    function initializeHome() {
+      const form = document.getElementById("new-production-form");
+      if (!form || form.dataset.initialized === "true") return;
+      form.dataset.initialized = "true";
+
+      const prompt = document.getElementById("project-prompt-input");
+      const count = document.getElementById("prompt-count");
+      const duration = document.getElementById("project-duration");
+      const resolution = document.getElementById("project-resolution");
+      const dryRun = document.getElementById("dry-run-checkbox");
+      const suggestions = document.getElementById("copilot-suggestions-box");
+      const submit = document.getElementById("create-production-button");
+      const forecastPanel = document.getElementById("token-forecast-panel");
+      const forecastDigest = document.getElementById("token-forecast-digest");
+      const overrunApproval = document.getElementById("token-overrun-approval");
+      const overrunCheckbox = document.getElementById("approve-token-overrun");
+      const safeBudgetButton = document.getElementById("apply-safe-token-budget");
+      const tokenBudgetInput = document.getElementById("token-budget");
+      const advancedSettings = document.getElementById("advanced-settings");
+      const fullControlFields = ["genre-select", "camera-style", "color-grade", "music-style", "voice-style"]
+        .map(id => document.getElementById(id)).filter(Boolean);
+      let copilotTimer;
+      let copilotRequest;
+      let forecastTimer;
+      let forecastRequest;
+      let latestForecast;
+      let forecastPromise;
+
+      const formatTokens = (value) => new Intl.NumberFormat("en-US").format(Math.max(0, Number(value) || 0));
+
+      const updateModeContract = () => {
+        const fullControl = document.getElementById("mode-control").checked;
+        fullControlFields.forEach(field => {
+          field.required = fullControl;
+          field.closest(".field")?.classList.toggle("is-required", fullControl);
+        });
+        const requirement = document.getElementById("advanced-settings-requirement");
+        if (requirement) requirement.textContent = fullControl ? "Required in Full Control" : "Automatic defaults";
+        if (fullControl && fullControlFields.some(field => !field.value)) advancedSettings.open = true;
+      };
+
+      const resizePrompt = () => {
+        prompt.style.height = "auto";
+        prompt.style.height = `${Math.min(Math.max(prompt.scrollHeight, 150), 340)}px`;
+        count.textContent = prompt.value.length;
+      };
+
+      const updateForecast = () => {
+        updateModeContract();
+        const seconds = Math.max(10, Math.min(300, Number(duration.value) || 75));
+        const scenesLow = Math.max(2, Math.round(seconds / 16));
+        const scenesHigh = Math.max(scenesLow + 1, Math.round(seconds / 11));
+        const shotsLow = Math.max(5, Math.round(seconds / 5.5));
+        const shotsHigh = Math.max(shotsLow + 2, Math.round(seconds / 3.8));
+        const multiplier = resolution.value === "1080P" ? 1.3 : 1;
+        const credits = dryRun.checked ? 0 : Math.ceil(shotsLow * .85 * multiplier);
+        document.getElementById("estimate-scenes").textContent = `${scenesLow}–${scenesHigh}`;
+        document.getElementById("estimate-shots").textContent = `${shotsLow}–${shotsHigh}`;
+        document.getElementById("estimate-credits").textContent = dryRun.checked ? "0 · sandbox" : `≈ ${credits}`;
+        document.getElementById("estimate-gates").textContent = document.getElementById("mode-control").checked ? "1 approval" : "Automatic";
+        submit.querySelector("span").textContent = document.getElementById("mode-control").checked ? "Create storyboard" : "Start production";
+      };
+
+      const tokenForecastPayload = () => ({
+        prompt: prompt.value.trim(),
+        brain_dump: document.getElementById("brain_dump_textarea")?.value || "",
+        duration: duration.value,
+        resolution: resolution.value,
+        dry_run: dryRun.checked,
+        token_budget: document.getElementById("token-budget")?.value,
+        pipeline_mode: form.querySelector('input[name="pipeline_mode"]:checked')?.value,
+        adaptation_mode: document.getElementById("adaptation-mode-select")?.value,
+        genre: document.getElementById("genre-select")?.value,
+        audience: document.getElementById("audience-input")?.value,
+        camera_style: document.getElementById("camera-style")?.value,
+        color_grade: document.getElementById("color-grade")?.value,
+        music_style: document.getElementById("music-style")?.value,
+        voice_style: document.getElementById("voice-style")?.value,
+        max_scenes: document.getElementById("max-scenes")?.value
+      });
+
+      const renderTokenForecast = (forecast) => {
+        const previousDigest = forecastDigest.value;
+        latestForecast = forecast;
+        forecastDigest.value = forecast.approval_digest || "";
+        if (previousDigest && previousDigest !== forecastDigest.value) overrunCheckbox.checked = false;
+
+        document.getElementById("estimate-scenes").textContent = forecast.estimated_scenes;
+        document.getElementById("estimate-shots").textContent = forecast.estimated_shots;
+        document.getElementById("estimate-credits").textContent = dryRun.checked ? "0 · sandbox" : `≈ ${forecast.estimated_image_credits}`;
+        document.getElementById("estimate-total-tokens").textContent = `≈ ${formatTokens(forecast.expected_tokens)}`;
+        document.getElementById("estimate-safe-budget").textContent = formatTokens(forecast.recommended_budget);
+        document.getElementById("token-forecast-confidence").textContent = `${forecast.confidence} · ${forecast.historical_samples} historical`;
+        document.getElementById("token-forecast-range").textContent = `${formatTokens(forecast.likely_min_tokens)}–${formatTokens(forecast.likely_max_tokens)}`;
+        document.getElementById("token-forecast-overrun").textContent = forecast.overrun_required ? `+${formatTokens(forecast.potential_overrun_tokens)}` : "Within budget";
+        document.getElementById("token-forecast-meter-fill").style.width = `${Math.min((forecast.expected_tokens / Math.max(forecast.configured_budget, 1)) * 100, 100)}%`;
+        forecastPanel.dataset.state = forecast.overrun_required ? "overrun" : "safe";
+
+        const riskText = (forecast.risk_factors || []).length ? ` Main risk factors: ${forecast.risk_factors.join(", ")}.` : "";
+        document.getElementById("token-forecast-explanation").textContent =
+          `Estimate includes screenplay, canonical assets, storyboard QA, repair reserve and final-video QA.${riskText}`;
+        if ((forecast.configuration_errors || []).length) {
+          document.getElementById("token-forecast-explanation").textContent = forecast.configuration_errors.join(" · ");
+          forecastPanel.dataset.state = "error";
+        }
+
+        const labels = {
+          narrative_and_edit_plan: "Narrative",
+          canonical_asset_profiling: "Assets",
+          storyboard_prompt_compilation: "Storyboard",
+          storyboard_visual_qa: "Visual QA",
+          repair_and_recheck_reserve: "Repair reserve",
+          final_video_qa: "Video QA"
+        };
+        const breakdown = document.getElementById("token-forecast-breakdown");
+        breakdown.replaceChildren();
+        Object.entries(forecast.breakdown || {}).forEach(([key, value]) => {
+          const row = document.createElement("span");
+          const label = document.createElement("em");
+          const amount = document.createElement("b");
+          label.textContent = labels[key] || key;
+          amount.textContent = formatTokens(value);
+          row.append(label, amount);
+          breakdown.appendChild(row);
+        });
+
+        overrunApproval.hidden = !forecast.overrun_required;
+        safeBudgetButton.hidden = !forecast.overrun_required;
+        safeBudgetButton.textContent = `Use safe budget · ${formatTokens(forecast.recommended_budget)} tokens`;
+        if (!forecast.overrun_required) overrunCheckbox.checked = false;
+        document.getElementById("token-overrun-approval-title").textContent =
+          `Approve up to ${formatTokens(forecast.potential_overrun_tokens)} predicted excess tokens`;
+      };
+
+      const fetchTokenForecast = async () => {
+        if (prompt.value.trim().length < 12) {
+          latestForecast = null;
+          forecastDigest.value = "";
+          forecastPanel.dataset.state = "idle";
+          overrunApproval.hidden = true;
+          document.getElementById("estimate-total-tokens").textContent = "Waiting for script";
+          document.getElementById("estimate-safe-budget").textContent = "—";
+          return null;
+        }
+        if (forecastRequest) forecastRequest.abort();
+        forecastRequest = new AbortController();
+        forecastPanel.dataset.state = "loading";
+        document.getElementById("token-forecast-confidence").textContent = "Calculating…";
+        forecastPromise = fetch("/projects/forecast_tokens", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content },
+          body: JSON.stringify(tokenForecastPayload()),
+          signal: forecastRequest.signal
+        }).then(async response => {
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.message || "Token forecast unavailable");
+          renderTokenForecast(data);
+          return data;
+        }).catch(error => {
+          if (error.name === "AbortError") return null;
+          forecastPanel.dataset.state = "error";
+          document.getElementById("token-forecast-confidence").textContent = "Unavailable";
+          document.getElementById("token-forecast-explanation").textContent = "The forecast could not be refreshed. Production will not start without a server-side budget check.";
+          throw error;
+        });
+        return forecastPromise;
+      };
+
+      const scheduleTokenForecast = () => {
+        clearTimeout(forecastTimer);
+        forecastTimer = setTimeout(() => { fetchTokenForecast().catch(() => {}); }, 500);
+      };
+
+      const renderSuggestions = (items) => {
+        suggestions.replaceChildren();
+        items.forEach((item) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "suggestion-chip";
+          button.textContent = `+ ${item}`;
+          button.addEventListener("click", () => {
+            prompt.value = `${prompt.value.trim()} ${item}.`.trim();
+            suggestions.replaceChildren();
+            resizePrompt();
+            prompt.dispatchEvent(new Event("input"));
+            prompt.focus();
+          });
+          suggestions.appendChild(button);
+        });
+      };
+
+      prompt.addEventListener("input", () => {
+        resizePrompt();
+        scheduleTokenForecast();
+        clearTimeout(copilotTimer);
+        if (copilotRequest) copilotRequest.abort();
+        if (prompt.value.trim().length < 12) { suggestions.replaceChildren(); return; }
+        copilotTimer = setTimeout(async () => {
+          suggestions.innerHTML = '<span class="copilot-loading"><i></i> Creative copilot is reading your premise…</span>';
+          copilotRequest = new AbortController();
+          try {
+            const response = await fetch("/projects/copilot_suggest", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content }, body: JSON.stringify({ prompt: prompt.value.trim() }), signal: copilotRequest.signal });
+            if (!response.ok) throw new Error("Copilot unavailable");
+            const data = await response.json();
+            renderSuggestions(data.suggestions || []);
+          } catch (error) {
+            if (error.name !== "AbortError") suggestions.innerHTML = '<span class="copilot-muted">Suggestions unavailable — you can continue normally.</span>';
+          }
+        }, 700);
+      });
+
+      document.getElementById("prompt-example-button").addEventListener("click", () => {
+        const examples = [
+          "A retired rescue pilot learns that the child she saved twenty years ago is now sending distress calls from a city that vanished overnight.",
+          "Two estranged sisters inherit a hotel where every room preserves one memory their family tried to erase.",
+          "A street musician discovers that one unfinished melody can briefly return lost people, but each performance removes one of his own memories."
+        ];
+        prompt.value = examples[Math.floor(Math.random() * examples.length)];
+        resizePrompt(); prompt.dispatchEvent(new Event("input")); prompt.focus();
+      });
+
+      const forecastControls = [
+        duration, resolution, dryRun, tokenBudgetInput, document.getElementById("genre-select"),
+        document.getElementById("brain_dump_textarea"), document.getElementById("adaptation-mode-select"),
+        document.getElementById("audience-input"), document.getElementById("camera-style"), document.getElementById("color-grade"),
+        document.getElementById("music-style"), document.getElementById("voice-style"), document.getElementById("max-scenes"),
+        ...form.querySelectorAll('input[name="pipeline_mode"]')
+      ].filter(Boolean);
+      forecastControls.forEach((element) => {
+        element.addEventListener("change", () => { updateForecast(); scheduleTokenForecast(); });
+        if (["INPUT", "TEXTAREA"].includes(element.tagName) && element !== dryRun) element.addEventListener("input", scheduleTokenForecast);
+      });
+      safeBudgetButton.addEventListener("click", async () => {
+        if (!latestForecast) return;
+        tokenBudgetInput.max = Math.max(Number(tokenBudgetInput.max) || 0, latestForecast.recommended_budget);
+        tokenBudgetInput.value = latestForecast.recommended_budget;
+        overrunCheckbox.checked = false;
+        clearTimeout(forecastTimer);
+        await fetchTokenForecast().catch(() => {});
+        tokenBudgetInput.focus();
+      });
+      form.addEventListener("submit", async (event) => {
+        if (form.dataset.forecastApprovedSubmit === "true") {
+          submit.disabled = true;
+          submit.classList.add("is-loading");
+          submit.querySelector("span").textContent = "Creating production…";
+          return;
+        }
+        event.preventDefault();
+        clearTimeout(forecastTimer);
+        let forecast;
+        try {
+          forecast = await fetchTokenForecast();
+        } catch (_error) {
+          return;
+        }
+        if (!forecast) return;
+        if ((forecast.configuration_errors || []).length) {
+          updateModeContract();
+          const missing = fullControlFields.find(field => !field.value);
+          if (missing) {
+            advancedSettings.open = true;
+            missing.focus();
+            missing.reportValidity();
+          }
+          return;
+        }
+        if (forecast.overrun_required && !overrunCheckbox.checked) {
+          overrunApproval.scrollIntoView({ behavior: "smooth", block: "center" });
+          overrunApproval.style.boxShadow = "0 0 0 2px rgba(227,163,77,.28)";
+          document.getElementById("token-forecast-explanation").textContent =
+            "Approval is required because the predicted safe budget exceeds the configured limit. Increase the budget or approve the forecasted excess.";
+          return;
+        }
+        form.dataset.forecastApprovedSubmit = "true";
+        form.requestSubmit(submit);
+      });
+      const serverErrors = document.getElementById("production-form-errors");
+      if (serverErrors) requestAnimationFrame(() => {
+        serverErrors.scrollIntoView({ behavior: "smooth", block: "center" });
+        serverErrors.focus({ preventScroll: true });
+      });
+      resizePrompt(); updateForecast(); scheduleTokenForecast();
+    }
+
+    document.addEventListener("DOMContentLoaded", initializeHome);
+    document.addEventListener("turbo:load", initializeHome);
+  })();
+</script>

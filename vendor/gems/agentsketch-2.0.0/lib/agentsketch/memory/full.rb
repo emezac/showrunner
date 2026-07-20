@@ -1,0 +1,2 @@
+# frozen_string_literal: true
+# Full memory strategy — defined in sliding_window.rb (shared file)

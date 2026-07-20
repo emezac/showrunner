@@ -1,0 +1,75 @@
+{
+  "budget_ledger": {
+    "tokens_used": 0,
+    "tokens_remaining": 18000,
+    "video_credits_used": 0,
+    "calls": []
+  },
+  "video_jobs": [
+    {
+      "shot_id": "1.1",
+      "task_id": "e664497e-a674-4c84-9a9a-7d038d03c528",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.3",
+      "task_id": "64aa0252-8949-47d0-8013-e2f88ab7180e",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.2",
+      "task_id": "2f4728e7-a51c-49cd-8b22-b77592e28e4a",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.4",
+      "task_id": "a651870d-3cf0-4a70-9b58-3f5bb811f21a",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.5",
+      "task_id": "96393b6f-06a9-4d4b-8cbf-d4140c9abdbe",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "1.6",
+      "task_id": "2519acfb-ae7e-411d-a52d-00ead6eb8fff",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "2.1",
+      "task_id": "eb4ee9ca-299c-4945-91d4-56fafbf20a0e",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "3.1",
+      "task_id": "4bd650bd-26a0-4eec-8bf4-93d87fb1bb8d",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "4.1",
+      "task_id": "71b3e1e6-fede-4c77-b61c-3311bb669c94",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "5.1",
+      "task_id": "90c41413-33a2-4141-940d-fc58e6bf1b08",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "6.1",
+      "task_id": "68511238-bbc0-4689-8c3f-ebc3f1706d51",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "7.1",
+      "task_id": "828669d4-4d34-4298-9203-54205a7df98f",
+      "status": "SUCCEEDED"
+    },
+    {
+      "shot_id": "8.1",
+      "task_id": "9bfe6038-bd95-45b4-9eeb-4a8fa5d03ff2",
+      "status": "SUCCEEDED"
+    }
+  ]
+}

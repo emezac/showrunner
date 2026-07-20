@@ -1,0 +1,129 @@
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/unicode-0.4.4.5/ext/unicode
+/Users/admin/.rbenv/versions/3.4.1/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/unicode-0.4.4.5/ext/unicode
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-ra8e8y sitelibdir\=./.gem.20260707-90692-ra8e8y clean
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/unicode-0.4.4.5/ext/unicode
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-ra8e8y sitelibdir\=./.gem.20260707-90692-ra8e8y
+compiling unicode.c
+unicode.c:647:50: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr1, RSTRING_PTR(str1), RSTRING_LEN(str1));
+  ~~~~~~~~~~~~~~~~~~~                            ^~~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:648:50: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr2, RSTRING_PTR(str2), RSTRING_LEN(str2));
+  ~~~~~~~~~~~~~~~~~~~                            ^~~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:689:50: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr1, RSTRING_PTR(str1), RSTRING_LEN(str1));
+  ~~~~~~~~~~~~~~~~~~~                            ^~~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:690:50: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr2, RSTRING_PTR(str2), RSTRING_LEN(str2));
+  ~~~~~~~~~~~~~~~~~~~                            ^~~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:726:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:752:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:778:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:804:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:831:49: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr1, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                           ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:861:49: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr1, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                           ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:891:49: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr1, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                           ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:920:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:946:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:977:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&ustr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:1040:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:1058:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:1082:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+unicode.c:1230:48: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  WStr_allocWithUTF8L(&wstr, RSTRING_PTR(str), RSTRING_LEN(str));
+  ~~~~~~~~~~~~~~~~~~~                          ^~~~~~~~~~~~~~~~
+/Users/admin/.rbenv/versions/3.4.1/include/ruby-3.4.0/ruby/internal/core/rstring.h:46:27: note: expanded from macro 'RSTRING_LEN'
+#define RSTRING_LEN       RSTRING_LEN
+                          ^
+18 warnings generated.
+compiling ustring.c
+compiling wstring.c
+linking shared-object unicode/unicode_native.bundle
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/unicode-0.4.4.5/ext/unicode
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-ra8e8y sitelibdir\=./.gem.20260707-90692-ra8e8y install
+/usr/bin/install -c -m 0755 unicode_native.bundle ./.gem.20260707-90692-ra8e8y/unicode
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/unicode-0.4.4.5/ext/unicode
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-ra8e8y sitelibdir\=./.gem.20260707-90692-ra8e8y clean

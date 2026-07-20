@@ -1,0 +1,12 @@
+:concurrency: 5
+:queues:
+  # Film planning and rendering are both critical-path queues. Keep them at
+  # the top so a newly created project cannot remain in `planning` while
+  # lower-priority AgentKit maintenance jobs are pending.
+  - agentkit_agents
+  - default
+  - agentkit_embeddings
+  - agentkit_hitl
+  - agentkit_financial
+  - agentkit_evolution
+  - agentkit_dreaming

@@ -1,0 +1,18 @@
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/websocket-driver-0.8.2/ext/websocket-driver
+/Users/admin/.rbenv/versions/3.4.1/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/websocket-driver-0.8.2/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-efdc8t sitelibdir\=./.gem.20260707-90692-efdc8t clean
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/websocket-driver-0.8.2/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-efdc8t sitelibdir\=./.gem.20260707-90692-efdc8t
+compiling websocket_mask.c
+linking shared-object websocket_mask.bundle
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/websocket-driver-0.8.2/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-efdc8t sitelibdir\=./.gem.20260707-90692-efdc8t install
+/usr/bin/install -c -m 0755 websocket_mask.bundle ./.gem.20260707-90692-efdc8t
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/websocket-driver-0.8.2/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-efdc8t sitelibdir\=./.gem.20260707-90692-efdc8t clean

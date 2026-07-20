@@ -1,0 +1,18 @@
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bindex-0.8.1/ext/skiptrace
+/Users/admin/.rbenv/versions/3.4.1/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-1bq3s5 sitelibdir\=./.gem.20260707-90692-1bq3s5 clean
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-1bq3s5 sitelibdir\=./.gem.20260707-90692-1bq3s5
+compiling cruby.c
+linking shared-object skiptrace/internal/cruby.bundle
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-1bq3s5 sitelibdir\=./.gem.20260707-90692-1bq3s5 install
+/usr/bin/install -c -m 0755 cruby.bundle ./.gem.20260707-90692-1bq3s5/skiptrace/internal
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-1bq3s5 sitelibdir\=./.gem.20260707-90692-1bq3s5 clean

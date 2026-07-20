@@ -1,0 +1,23 @@
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bootsnap-1.24.6/ext/bootsnap
+/Users/admin/.rbenv/versions/3.4.1/bin/ruby extconf.rb
+checking for fdatasync() in unistd.h... yes
+checking for fstatat() in sys/stat.h... yes
+checking for whether -D_GNU_SOURCE is accepted as CPPFLAGS... yes
+checking for whether -O3 is accepted as CFLAGS... yes
+checking for whether -std=c99 is accepted as CFLAGS... yes
+creating Makefile
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bootsnap-1.24.6/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-3t51j1 sitelibdir\=./.gem.20260707-90692-3t51j1 clean
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bootsnap-1.24.6/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-3t51j1 sitelibdir\=./.gem.20260707-90692-3t51j1
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.bundle
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bootsnap-1.24.6/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-3t51j1 sitelibdir\=./.gem.20260707-90692-3t51j1 install
+/usr/bin/install -c -m 0755 bootsnap.bundle ./.gem.20260707-90692-3t51j1/bootsnap
+
+current directory: /Users/admin/code/ruby/hackaton/cuatro/gems/bootsnap-1.24.6/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20260707-90692-3t51j1 sitelibdir\=./.gem.20260707-90692-3t51j1 clean

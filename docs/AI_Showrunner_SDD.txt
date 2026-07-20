@@ -1,0 +1,291 @@
+SOFTWARE DESIGN DOCUMENT
+AI Showrunner Agent
+Autonomous Short-Drama Creation Pipeline on Qwen Cloud
+Qwen Cloud Global AI Hackathon — Track 2: AI Showrunner
+Version 1.0 — Draft for Implementation
+Author: Enrique · Prepared with Ruby on Rails 8, Ruby DSL, Python Engine, DashScope/HappyHorse
+
+Table of Contents
+
+
+
+1. Executive Summary
+AI Showrunner is an autonomous short-drama production agent submitted to the Qwen Cloud Global AI Hackathon under Track 2 ("AI Showrunner"). Given a single free-text prompt from a user, the system produces a complete short drama — script, storyboard, generated video shots, and an edited final cut — with no further human input. All LLM reasoning routes through Qwen Cloud (DashScope) models; all video generation uses the HappyHorse family (t2v / i2v) via the DashScope video-synthesis endpoint.
+The system is architected around a pattern Enrique has used successfully across MaaS, comic_ai.rb and course_sketch.rb: a Ruby DSL that encapsulates orchestration complexity and reads like the domain (screenplay structure, shots, transitions), which compiles to a JSON manifest, which a Python engine executes against external AI services (LLM reasoning, image conditioning, HappyHorse video synthesis, and final assembly with FFmpeg). A Rails 8 application is the operator-facing surface: it accepts the prompt, runs the full pipeline as background jobs, and exposes progress/results.
+The distinguishing technical bet of this submission is the 
+hidden narrative engine: internally, script generation is not a blank-page LLM call. It is powered by a repurposed Myth Compiler — a DNA-extraction / semantic-projection pipeline that takes a base story's deep structure (archetypes, narrative genes, emotional curve) and transmutes it into a new domain. The hackathon judge never sees this: from their point of view, they type a prompt and get a drama. Internally, the prompt is classified against a curated catalog of base stories and destination domains, one pairing is selected (seeded, not purely random, so it is reproducible and explainable in the architecture diagram), and the Myth Compiler pipeline drives scriptwriting and storyboarding before HappyHorse ever sees a prompt.
+This document specifies the full system: architecture, the Ruby DSL and its compiled manifest schema, the seven-stage pipeline, the Rails data model, the DashScope/HappyHorse integration contract, the token/credit budget strategy required by the track's judging criteria, and a six-week delivery plan.
+2. Hackathon Alignment
+2.1 Track & Deadline
+Track 2 — AI Showrunner. Deliverable: an agent that autonomously handles scriptwriting, storyboarding, video generation and editing, demonstrating narrative ability and multimodal orchestration under a limited token budget. Submission deadline per the hackathon rules: Jul 9, 2026, 3:00pm CST (Devpost timer references 2:00pm Pacific).
+2.2 Submission Requirements Checklist
+	•	Public code repository with OSS license visible in the GitHub About section.
+	•	Proof of Alibaba Cloud deployment — a linked code file showing the backend calling Alibaba Cloud (DashScope) services/APIs (Section 9 gives the exact file).
+	•	Architecture diagram — Rails ⇄ Ruby DSL/Engine ⇄ Python ⇄ DashScope/HappyHorse ⇄ storage/CDN (Section 3.3).
+	•	Demo video ≤ 3 minutes, public on YouTube/Vimeo, no third-party copyrighted music.
+	•	Text description of features/functionality; track identification (Track 2).
+	•	Optional blog/social post on the build journey, for the Blog Post bonus prize.
+2.3 Judging Criteria Mapping
+Criterion
+Weight
+How this design addresses it
+Innovation & AI Creativity
+30%
+Hidden narrative-transmutation engine (Myth Compiler) instead of a naive prompt→script call; DSL-as-interface pattern reused from three prior MaaS demos, proven and battle-tested.
+Technical Depth & Engineering
+30%
+Ruby DSL → JSON manifest → Python engine architecture with async DashScope job orchestration, retry/backoff, idempotent Sidekiq jobs, ontological separation of story-DNA data from generated media.
+Problem Value & Impact
+25%
+Generalizes to any short-form video content pipeline; the DSL and manifest format are reusable outside the hackathon (same pattern as CourseSketch/VideoSketch).
+Presentation & Documentation
+15%
+This SDD, an architecture diagram, and a demo showing prompt → finished drama end-to-end with visible token/credit accounting.
+3. System Architecture
+3.1 Design Principles
+	•	DSL-first: the orchestration surface is a Ruby DSL (ShowrunnerDSL), mirroring the comic_ai.rb / course_sketch.rb / video_sketch.rb pattern already proven in this codebase.
+	•	Ontological separation: story DNA / catalog data, generated screenplay artifacts, and rendered media live in structurally separate tables and storage prefixes — never comingled, so a failed generation never corrupts the base catalog.
+	•	Everything through Qwen: no OpenAI/Anthropic/Gemini calls in the critical path. A single QwenRouter adapter is the only egress point for LLM calls.
+	•	Async-first: HappyHorse video synthesis is asynchronous (X-DashScope-Async: enable); the whole pipeline is modeled as a Sidekiq job chain with polling, not a blocking HTTP request.
+	•	Token-budget-aware at every LLM call site — see Section 10.
+3.2 High-Level Component Diagram (textual)
+┌─────────────────────────────────────────────────────────────────────┐
+│  Rails 8 App (Operator UI + API)                                     │
+│  ShowrunnerController → ShowrunnerDSL.render(prompt) → BuildResult   │
+└───────────────┬───────────────────────────────────────────────────┬─┘
+                │ writes manifest.json                              │ Sidekiq enqueue
+                ▼                                                   ▼
+        /tmp/showrunner_manifest_<uuid>.json          ShowrunnerPipelineJob (Sidekiq)
+                │                                                   │
+                └──────────────────┬────────────────────────────────┘
+                                   ▼
+                  showrunner_engine.py (subprocess, streamed logs)
+        ┌───────────────┬───────────────┬───────────────┬───────────────┐
+        ▼               ▼               ▼               ▼               ▼
+  StoryEngine      Screenwriter    Storyboarder     VideoSynth       Editor
+  (Myth Compiler   (QwenRouter,    (QwenRouter +    (HappyHorse      (FFmpeg +
+   internal,       qwen-plus)      image-gen for    t2v / i2v via    VideoSketch-
+   never exposed)                  first-frames)    DashScope,       style renderer)
+                                                    async+poll)
+                                   │                                       │
+                                   ▼                                       ▼
+                         Alibaba Cloud OSS (assets)                 final_cut.mp4
+                                   │                                       │
+                                   └───────────────┬───────────────────────┘
+                                                   ▼
+                                     Rails: RenderJob#completed, notify UI
+3.3 Deployment Topology (Alibaba Cloud)
+	•	Rails app + Sidekiq + Redis + Postgres: containerized, deployed on Alibaba Cloud ECS (or Alibaba Cloud Container Service for Kubernetes for the judged demo).
+	•	Generated media (frames, video shots, final cuts): Alibaba Cloud OSS bucket, signed URLs for playback.
+	•	All model calls (script, storyboard prompts, HappyHorse) go to dashscope-intl.aliyuncs.com — this alone satisfies "backend running on Alibaba Cloud" for the proof-of-deployment requirement, but the ECS/OSS hosting closes the loop completely.
+	•	Secrets (DASHSCOPE_API_KEY, OSS keys) via Alibaba Cloud KMS-backed Rails credentials — never hard-coded (the DEFAULT_API_KEY pattern in comic_ai.rb is explicitly NOT to be repeated here for the Qwen key).
+4. The Hidden Narrative Engine (Myth Compiler Internals)
+This is the section that must never surface in the product UI, demo copy, or public repo README beyond an internal code comment. From the judge's and end user's perspective there is one input — a prompt — and one output — a finished drama. Internally, the StoryEngine service performs the following, silently:
+4.1 Why hide it
+Two reasons drive this. First, product framing: the value proposition is "describe your drama, get your drama," not "pick a myth-transmutation domain." Second, and more importantly for the Innovation criterion: judges reward systems that feel like they reasoned about narrative structure, not systems that expose a menu of presets. The transmutation mechanism is the innovation; the prompt-to-selection mapping is the product.
+4.2 Internal Pipeline (adapted from myth_compiler.rb)
+	•	Prompt Intake — user's free-text prompt is embedded and classified (Qwen, low-token classification call) into: genre tone, protagonist archetype hint, conflict type, target emotional arc (tragic / hopeful / dark / epic).
+	•	Base Story Selection — StoryCatalog holds a curated set of public-domain / archetype-level base stories (not verbatim copyrighted text — only structural DNA: protagonist/antagonist archetypes, narrative genes such as forbidden_love, betrayal, sacrifice, and an emotional curve). A weighted, seeded selection (seed = hash of the prompt) picks one base story so the same prompt is reproducible.
+	•	Domain Selection — DomainCatalog holds destination domains (space_opera, cyberpunk_megacity, wild_west, feudal_japan, etc., taken from the existing domain list). Domain choice is conditioned on the classified tone/genre from step 1, then seeded-random among the compatible subset — this is the "random depending on the initial prompt" behavior the user asked for, but constrained so it never feels arbitrary.
+	•	DNAExtractor / SemanticProjector / ArchetypeCompiler / WorldBuilder — reused conceptually from myth_compiler.rb's pipeline: project the base story's deep structure onto the chosen domain, producing a TransformMap and a CharacterRoster.
+	•	NarrativeRecompiler — produces the actual scene-by-scene screenplay in the new domain, chapter/scene count driven by the short-drama duration target (e.g., 3 scenes × ~5–8s HappyHorse shots = a 60–90s drama).
+	•	Handoff to Screenwriter/Storyboarder (Section 6) — StoryEngine's output is a StoryGraph + CompiledNarrative object; nothing about "myth compiling" appears past this boundary in any user-facing artifact.
+4.3 Catalog Sizing for the Hackathon Demo
+Catalog
+Demo size
+Production target
+Base stories (DNA only)
+8–10 archetypal structures
+40+, versioned, expert-curated
+Destination domains
+12 (existing list in README.md)
+30+, with sub-genre tags
+Valid (story × domain) pairs
+~60 curated-compatible pairs
+full matrix with compatibility scoring
+5. ShowrunnerDSL — Ruby Orchestration Layer
+Follows the exact shape of course_sketch.rb / video_sketch.rb: a Builder object collects declarative calls inside an instance_eval'd block and emits a JSON manifest. The DSL is intentionally thin — it does not itself talk to Qwen; it only describes the drama to be produced and the constraints (duration, resolution, token budget ceiling).
+5.1 Public Entry Point
+result = Showrunner.produce(
+  prompt:        user_prompt,           # the ONLY creative input from the user
+  output:        "drama_#{uuid}.mp4",
+  target_duration: 75,                   # seconds, drives scene/shot count
+  resolution:    "720P",                # HappyHorse: 480P | 720P | 1080P
+  token_budget:  18_000,                 # hard ceiling across all Qwen calls
+  video_model:   :happyhorse_1_1,         # maps to happyhorse-1.1-t2v / -i2v
+  quality:       "high"
+) do
+  # nothing else required — everything below is auto-populated by StoryEngine,
+  # but can be overridden for testing/determinism:
+  seed 482913          # optional: pin story/domain selection for reproducible demos
+end
+5.2 Compiled Manifest Skeleton (showrunner_manifest.json)
+{
+  "version": "1.0",
+  "request": {
+    "prompt": "...", "target_duration": 75, "resolution": "720P",
+    "token_budget": 18000, "video_model": "happyhorse-1.1", "seed": 482913
+  },
+  "story": {                     // filled by StoryEngine, internal only
+    "base_story_id": "bs_014", "domain": "space_opera",
+    "preserved_genes": ["betrayal", "sacrifice"], "tone": "tragic"
+  },
+  "screenplay": {
+    "title": "...", "scenes": [
+      { "id": 1, "heading": "INT. DERELICT CRUISER - NIGHT",
+        "action": "...", "dialogue": [ {"character":"KAEL","line":"..."} ],
+        "shots": [ {"id": "1.1", "duration": 5, "camera": "slow push-in",
+                     "visual_prompt": "...", "mode": "i2v|t2v" } ] }
+    ]
+  },
+  "storyboard": { "frames": [ {"shot_id": "1.1", "image_url": "oss://..."} ] },
+  "video_jobs": [ {"shot_id": "1.1", "task_id": "dashscope-task-uuid",
+                     "status": "PENDING|RUNNING|SUCCEEDED|FAILED"} ],
+  "edit": { "transitions": ["panel_slam","dissolve"], "music_track": null,
+            "captions": true },
+  "budget_ledger": { "tokens_used": 0, "tokens_remaining": 18000,
+                     "video_credits_used": 0 }
+}
+5.3 Builder Method Surface
+Method
+Purpose
+Showrunner.produce(...) { }
+Entry point; returns a BuildResult with #preview!, #render!, #info
+seed(n)
+Pins the pseudo-random story/domain selection for reproducibility
+force_story(id) / force_domain(name)
+Testing/demo override — bypasses classification
+max_scenes(n) / shot_duration(secs)
+Coarse control over pacing without touching narrative logic
+voice_track(path) / music_track(path)
+Optional audio layering, reusing VideoSketch's audio_track ducking model
+6. Pipeline Stages (Detailed)
+Stage 1 — Prompt Intake & Classification
+Rails receives the prompt via ShowrunnerController#create, persists a Project record (status: queued), enqueues ShowrunnerPipelineJob. First engine step: one short QwenRouter call (qwen-turbo, ≤300 tokens) classifies tone/genre/conflict — cheapest model, tightest budget, per Section 10.
+Stage 2 — Story & Domain Selection (hidden)
+StoryEngine (Section 4) selects base_story_id and domain deterministically from the seed. Zero additional Qwen tokens spent here — this is pure Ruby/Python logic over the local catalog, which is precisely why hiding the transmutation strategy is cheap: it costs no tokens and adds narrative depth for free.
+Stage 3 — Scriptwriting
+Screenwriter calls qwen-plus with the TransformMap + CharacterRoster + target scene count, producing structured JSON (scene headings, action lines, dialogue) — response_format constrained to JSON, single call per scene batch (not per scene) to conserve tokens.
+Stage 4 — Storyboarding
+For each shot, Storyboarder derives a concise visual_prompt (reusing the scene's action/dialogue, compressed). For shots using i2v mode, a first-frame image is generated (Qwen image capability or a lightweight image model) and uploaded to OSS; for t2v-mode shots, no first frame is needed — HappyHorse's happyhorse-1.1-t2v generates directly from the prompt.
+Stage 5 — Video Generation (HappyHorse)
+VideoSynth submits one DashScope video-synthesis job per shot with X-DashScope-Async: enable, storing the returned task_id in video_jobs. A polling worker (Sidekiq, exponential backoff, 5s→30s) checks task status and downloads the result video to OSS on SUCCEEDED, retries with a simplified prompt on FAILED (max 2 retries per shot before flagging for manual review).
+Stage 6 — Editing & Assembly
+Editor stitches shots in scene order using an FFmpeg-driven Python renderer architecturally identical to video_sketch_renderer.py: transitions between shots (panel_slam, dissolve, wipe), optional caption overlays per scene heading, optional music/voice ducking exactly as VideoSketch's audio_track duck_when_voice model already implements.
+Stage 7 — Delivery
+Final MP4 uploaded to OSS, Project marked completed, Rails notifies the UI (ActionCable) with a signed playback URL and a budget_ledger summary shown to the user as "tokens & credits used" — itself a demo-worthy transparency feature for the Presentation criterion.
+7. Rails Data Model
+Table
+Key columns
+Notes
+projects
+id, prompt, status, seed, token_budget, resolution, target_duration
+One per user request; status: queued/running/completed/failed
+story_catalog_entries
+id, base_story_key, genes[], archetypes(jsonb)
+Curated, admin-managed, never user-writable — DDL-separated from generated content
+domain_catalog_entries
+id, domain_key, description, compatible_tones[]
+Curated
+screenplays
+id, project_id, base_story_id, domain_id, title, scenes(jsonb)
+One per project; scenes/dialogue as structured jsonb, not prose blobs
+shots
+id, screenplay_id, scene_number, duration, mode(i2v/t2v), visual_prompt, first_frame_url
+
+video_jobs
+id, shot_id, dashscope_task_id, status, retries, video_url
+Polled by Sidekiq; unique index on dashscope_task_id
+render_jobs
+id, project_id, status, final_video_url, budget_ledger(jsonb)
+Terminal record for the assembled cut
+token_ledger_entries
+id, project_id, stage, model, tokens_used, cost_estimate
+Append-only audit trail — powers Section 10 dashboards
+Ontological firewall: story_catalog_entries and domain_catalog_entries are read-only at runtime (seeded via Rails db:seed, editable only through an admin console) and are never joined in the same query path as screenplays/shots in a way that could leak curated IP back into generated output verbatim — consistent with the ontological-separation principle already used for maas_memories vs maas_imagined_scenarios.
+8. QwenRouter — LLM Adapter
+A single Ruby (and mirrored Python) adapter is the only path to Qwen models, enforcing the hackathon's "all LLM calls through Qwen" constraint and giving one place to instrument token accounting.
+Stage
+Model
+Rationale
+Prompt classification
+qwen-turbo
+Cheapest; short structured output
+Scriptwriting
+qwen-plus
+Needs creative range + reliable JSON mode
+Storyboard prompt compression
+qwen-turbo
+Mechanical summarization, not creative
+Fallback / retry on malformed JSON
+qwen-max
+Used sparingly — only after 2 qwen-plus failures, expensive but rare
+module QwenRouter
+  ENDPOINT = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
+  def self.call(model:, system:, user:, max_tokens:, response_format: :json)
+    # builds request, tracks tokens_used from response.usage, raises
+    # QwenRouter::BudgetExceeded before ever sending if projected cost
+    # would exceed the project's remaining token_budget
+  end
+end
+9. DashScope / HappyHorse Integration Contract
+9.1 Submission (proof-of-Alibaba-Cloud-deployment file)
+File: app/services/video_synth/happy_horse_client.rb — this is the file linked in the Devpost submission as proof of Alibaba Cloud usage.
+POST https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis
+Headers: X-DashScope-Async: enable, Authorization: Bearer <DASHSCOPE_API_KEY>
+
+# i2v (first-frame conditioned) — used when Storyboarder produced a frame:
+{ "model": "happyhorse-1.1-i2v",
+  "input": { "prompt": "<shot.visual_prompt>",
+              "media": [{"type":"first_frame","url":"<oss first_frame_url>"}] },
+  "parameters": { "resolution": "720P", "duration": 5 } }
+
+# t2v (text-only) — used for establishing/wide shots with no first frame:
+{ "model": "happyhorse-1.1-t2v",
+  "input": { "prompt": "<shot.visual_prompt>" },
+  "parameters": { "resolution": "720P", "ratio": "16:9", "duration": 5 } }
+9.2 Polling
+GET the task result endpoint using the returned task_id every 5s (backoff to 30s after 60s elapsed); statuses PENDING → RUNNING → SUCCEEDED/FAILED. On SUCCEEDED, stream the result URL into OSS via a background download job rather than holding the request open.
+9.3 Failure Handling
+	•	FAILED with content-policy reason → rewrite visual_prompt via qwen-turbo (strip flagged terms), retry once.
+	•	FAILED with generic error → retry with unchanged prompt once, then mark shot needs_review and substitute a still-frame fallback so the pipeline still produces a complete cut.
+	•	Timeout > 6 min per shot → abandon, use fallback still, log to token_ledger_entries with cost_estimate = 0 for transparency.
+10. Token & Credit Budget Strategy
+The track explicitly judges quality under a limited token budget. This is treated as a first-class constraint, not an afterthought:
+	•	Every QwenRouter.call estimates tokens before sending (prompt length heuristic) and raises before exceeding the project's token_budget.
+	•	Batch, don't loop: scriptwriting requests all scenes in one qwen-plus call with a strict JSON schema, rather than one call per scene — cutting call count (and system-prompt repetition cost) by the scene count.
+	•	Cheapest-adequate model per stage (Section 8 table) — qwen-turbo for anything mechanical, qwen-plus only where creative quality matters, qwen-max reserved for rare fallback.
+	•	Visual prompts are compressed (target ≤ 40 tokens) before being sent to HappyHorse — video generation cost/latency scales with prompt complexity far less than with duration/resolution, so the token savings here mainly protect the classification/scripting budget, not the video budget.
+	•	budget_ledger is surfaced in the UI in real time so the judged demo can visibly show "used 6,400 / 18,000 tokens" — turning the constraint into a visible feature.
+11. Six-Week Implementation Timeline
+Week
+Milestone
+1
+Rails skeleton, Project/Screenplay/Shot models, QwenRouter adapter, seed StoryCatalog/DomainCatalog (8 stories × 12 domains)
+2
+ShowrunnerDSL + manifest compiler; StoryEngine port from myth_compiler.rb (DNA extraction + projection, no LLM yet — deterministic catalog logic)
+3
+Screenwriter + Storyboarder stages; qwen-plus JSON-schema scriptwriting; first-frame image pipeline
+4
+HappyHorseClient (submission + polling), Sidekiq job chain, OSS upload, failure/retry handling
+5
+Editor/assembly engine (FFmpeg, transitions, captions) adapted from video_sketch_renderer.py; budget ledger UI
+6
+End-to-end hardening, demo video recording, architecture diagram, Alibaba Cloud deployment, submission writeup
+12. Risks & Mitigations
+Risk
+Mitigation
+Judges perceive the story engine as a fixed template if the trick is noticed
+Keep transmutation invisible in UI/README; only disclose in the technical architecture doc/demo narration as an implementation detail, framed as "narrative-DNA-guided generation," never as "randomly picks from a list"
+HappyHorse latency blows the 3-minute demo video budget
+Pre-render a primary demo run ahead of recording; keep resolution at 720P/5s shots for the judged demo
+Token budget breached mid-run
+Hard pre-flight check in QwenRouter; graceful degradation to qwen-turbo-only mode if budget is nearly exhausted
+Catalog too small, repeated demos look similar
+60 curated pairs is enough for a single judged run; document the scaling path to the full matrix
+13. Appendix — Glossary
+	•	StoryEngine — internal service wrapping the Myth Compiler pipeline; never user-facing.
+	•	Shot — the atomic HappyHorse generation unit (5–10s video clip).
+	•	Scene — one or more shots sharing a heading/location in the screenplay.
+	•	Budget ledger — append-only token/credit accounting surfaced to the user.
+	•	i2v / t2v — image-to-video / text-to-video HappyHorse generation modes.
