@@ -180,12 +180,14 @@ Install the following before booting the application:
 
 Redis must be running **before Rails boots**. The Sidekiq scheduling integration is loaded during application initialization, so commands such as `bin/rails routes`, database tasks, the web server, and tests can fail early when Redis is unavailable.
 
+The repository includes all five internal gems under `vendor/gems`; no private gem server or additional source checkout is required. JavaScript is delivered through Rails import maps, so Node.js and npm are not required for the current application.
+
 ## Configuration
 
 Copy the environment template and replace its placeholder credential:
 
 ```bash
-cp .env.example .env
+cp env.example .env
 ```
 
 Important variables:
@@ -193,8 +195,8 @@ Important variables:
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `QWEN_TOKEN` | Yes for online generation | Shared credential for Qwen and HappyHorse. `DASHSCOPE_API_KEY` is accepted as a fallback. |
-| `QWEN_BASE_URL` | No | OpenAI-compatible Qwen endpoint. |
-| `QWEN_MODEL` | No | Default language model. Stage-specific `QWEN_MODEL_<STAGE>` overrides are supported. |
+| `base_url` | No | Qwen Cloud-compatible endpoint used by `env.example`. `QWEN_BASE_URL` is the canonical deployment alias and takes precedence. |
+| `model1` | No | Default model used by `env.example`. `QWEN_MODEL` takes precedence, and stage-specific `QWEN_MODEL_<STAGE>` overrides are supported. |
 | `QWEN_VISION_MODEL` | No | Vision model used by QA. |
 | `DASHSCOPE_HOST` | No | Native DashScope host for image/video jobs. |
 | `HAPPYHORSE_MODEL` | No | Video synthesis model. |
@@ -205,20 +207,66 @@ Important variables:
 
 Never commit `.env`. If a real provider key has appeared in a commit, log, screenshot, chat, or ticket, rotate it before continuing.
 
-## Local setup
+## Fresh-clone setup
 
-Start PostgreSQL and Redis first. On macOS with Homebrew, for example:
+Clone the repository and enter it:
 
 ```bash
+git clone <repository-url> ruby-showrunner
+cd ruby-showrunner
+```
+
+Install the locked Bundler version if it is not already available:
+
+```bash
+gem install bundler -v 4.0.11
+bundle _4.0.11_ install
+```
+
+The lockfile includes macOS ARM and common Linux ARM/x86 platforms. Native gems still require a compiler and PostgreSQL development headers.
+
+### System packages
+
+On macOS with Homebrew:
+
+```bash
+brew install postgresql pgvector redis ffmpeg
 brew services start postgresql
 brew services start redis
 ```
 
-Then install dependencies and prepare the database:
+On Debian/Ubuntu, install the equivalent packages for the PostgreSQL version provided by the distribution:
 
 ```bash
-bundle install
+sudo apt update
+sudo apt install build-essential postgresql postgresql-contrib libpq-dev redis-server ffmpeg
+sudo systemctl enable --now redis-server postgresql
+```
+
+Install the matching PostgreSQL `pgvector` package (commonly named `postgresql-<version>-pgvector`) or build the extension before preparing the database. Confirm that PostgreSQL can execute `CREATE EXTENSION vector`; the checked-in schema requires it for AgentKit memory embeddings.
+
+### Application setup
+
+Create the local environment file and insert a valid Qwen Cloud token:
+
+```bash
+cp env.example .env
+```
+
+Verify the required services and media tools:
+
+```bash
+pg_isready
+redis-cli ping
+ffmpeg -version
+ffprobe -version
+```
+
+`redis-cli ping` must return `PONG`. Then prepare the development and test databases:
+
+```bash
 bin/rails db:prepare
+RAILS_ENV=test bin/rails db:prepare
 ```
 
 Optional demo data can be loaded with:
@@ -227,7 +275,7 @@ Optional demo data can be loaded with:
 bin/rails db:seed
 ```
 
-The seed creates a sample dry-run project. It is demonstration data, not part of the production pipeline contract.
+The seed creates a sample dry-run project. It is demonstration data, not part of the production pipeline contract. Seeding is optional because the web controller creates its local demo account and user on first access.
 
 ## Running the application
 
@@ -241,9 +289,8 @@ This starts:
 
 - Rails web server
 - Sidekiq worker
-- Redis server
 
-If Redis is already managed by Homebrew or another service, avoid starting a second process on the same port. Run the web and worker separately instead:
+Redis and PostgreSQL are external development services and must already be running. Keeping Redis outside Foreman prevents Rails and Sidekiq from racing it during application boot. To run the web and worker separately instead:
 
 ```bash
 PORT=5000 bin/rails server
@@ -257,6 +304,8 @@ Open:
 - Health check: [http://localhost:5000/up](http://localhost:5000/up)
 
 After changing job or service code, restart Sidekiq. A running worker keeps the Ruby classes it loaded at boot.
+
+For a first-boot smoke test, verify that `/up` returns HTTP 200, open `/projects`, create a `dry_run` project, and confirm that Sidekiq advances it beyond `planning`. A project that remains in `planning` usually means the worker is not running or cannot reach Redis.
 
 ## Using the product
 

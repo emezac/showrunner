@@ -31,8 +31,12 @@ module QwenRouter
 
       new(
         api_key:       key,
-        base_url:      ENV.fetch("QWEN_BASE_URL", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"),
-        default_model: ENV.fetch("QWEN_MODEL", "qwen3.7-plus"),
+        # QWEN_BASE_URL/QWEN_MODEL are the canonical deployment names. The
+        # lower-case aliases match the environment file supplied by Qwen Cloud
+        # and keep a freshly copied env.example functional without translation.
+        base_url:      ENV["QWEN_BASE_URL"].presence || ENV["base_url"].presence ||
+                       "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+        default_model: ENV["QWEN_MODEL"].presence || ENV["model1"].presence || "qwen3.7-plus",
         read_timeout:  ENV.fetch("QWEN_READ_TIMEOUT", "180").to_i,
         open_timeout:  ENV.fetch("QWEN_OPEN_TIMEOUT", "15").to_i,
         max_retries:   ENV.fetch("QWEN_MAX_RETRIES", "3").to_i

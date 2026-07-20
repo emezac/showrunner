@@ -1,9 +1,25 @@
 #!/usr/bin/env ruby
 
+require "socket"
+require "uri"
+
 # macOS does not provide the Linux-only C.UTF-8 locale. Foreman reads .env
 # using the process external encoding, so inheriting that invalid locale makes
 # any non-ASCII prompt/configuration byte crash the entire development stack.
 ENV["LANG"] = "en_US.UTF-8"
 ENV["LC_ALL"] = "en_US.UTF-8"
+
+# AgentKit loads its Sidekiq cron schedule while Rails boots. Fail with an
+# actionable message instead of letting the web and worker processes crash
+# independently when a fresh clone has not started Redis yet.
+redis_uri = URI(ENV.fetch("REDIS_URL", "redis://127.0.0.1:6379/1"))
+begin
+  socket = Socket.tcp(redis_uri.host, redis_uri.port || 6379, connect_timeout: 2)
+  socket.close
+rescue StandardError => error
+  warn "Redis is required before bin/dev can start (#{redis_uri.host}:#{redis_uri.port || 6379})."
+  warn "Start Redis first, then retry. Original error: #{error.message}"
+  exit 1
+end
 
 exec "bundle", "exec", "foreman", "start", "-f", "Procfile.dev"
