@@ -12,7 +12,7 @@ The following Qwen Cloud screenshots provide the deployment evidence required fo
 
 | Evidence | Qwen Cloud deployment proof |
 | --- | --- |
-| Proof 1 | [Open `proof1.png`](proof1.png) |
+| Proof 1 | [Open `proof.png`](proof.png) |
 | Proof 2 | [Open `proof2.png`](proof2.png) |
 | Proof 3 | [Open `proof3.png`](proof3.png) |
 
